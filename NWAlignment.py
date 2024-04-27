@@ -193,7 +193,3 @@ if __name__ == "__main__":
     """
     example = NWA(Sequence("1", "abcdccdc"), Sequence("2", "abbcadad"))
     print(example.alignment)
-    """
-    Output:
-    [Sequence('1', 'abcd-ccdc'), Sequence('2', 'abbc-adad')]
-    """
