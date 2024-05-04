@@ -1,0 +1,120 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 4%;
+}
+
+h1 {
+    font-weight: lighter; 
+}
+
+h2 {
+    font-weight: normal; 
+}
+
+.container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: thin;
+}
+
+.align-btn {
+    background-color: white;
+    color: black;
+    font-size: medium;
+    padding: 10px;
+    margin: 5px;
+    border-width: 2px;
+    border-color: black;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Add transition */
+}
+
+.align-btn:hover {
+    background-color: #e6e6e6; /* Slightly darker background on hover */
+}
+
+.align-btn:active { /* Style for when the button is clicked */
+    background-color: rgb(60, 60, 60); 
+    color: rgb(220, 220, 220); 
+}
+
+
+.input-section {
+    display: flex;
+    justify-content: space-between;
+}
+
+.sequence-input {
+    width: 49%;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: medium;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    resize: none;
+}
+
+textarea {
+    height: 40vh;
+    font-size: medium;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    resize: none;
+}
+
+.result-section {
+    background-color: #ffffff;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.result-item { /* Target the new container */
+    display: flex; /* Allow children to sit side-by-side */
+    width: 100%; /* Allow to take up full width */
+}
+
+.result-output {
+    background-color: #ffffff;
+    width: 85%;
+    font-family: monospace;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: medium;
+    padding-bottom: 20px;
+}
+
+.result-name {
+    background-color: #ffffff;
+    width: 15%;
+    text-align: right;
+    margin-right: 2%;
+    font-family: monospace;
+    white-space: nowrap;
+    overflow-x: auto;
+    font-size: medium;
+    padding-bottom: 20px;
+}

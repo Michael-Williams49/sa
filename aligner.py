@@ -1,3 +1,4 @@
+import math
 # Represents a sequence with a name and a sequence string
 class Sequence:
     def __init__(self, name: str, seq: str):
@@ -13,6 +14,9 @@ class Sequence:
 
     def __repr__(self):
         return f"{self.name}: {self.seq}"
+    
+    def to_dict(self):
+        return {self.name: self.seq}
 
 # Represents a table for storing scores and alignments
 class Table:
@@ -184,7 +188,17 @@ class NWA:
                 indexY += 1
                 seqX += "-"
                 seqY += self.score.seqY[indexY]
-        self.alignment.append([Sequence(self.score.nameX, seqX), Sequence(self.score.nameY, seqY)])
+        matching = ""
+        for i in range(len(seqX)):
+            if seqX[i] == seqY[i]:
+                matching += "|"
+            else:
+                matching += " "
+        counter = " " * len(seqX)
+        for count in range(0, len(seqX), 10):
+            digit = int(math.log10(count + 1)) + 1
+            counter = counter[:count] + str(count) + counter[count + digit:]
+        self.alignment.append([Sequence("", counter), Sequence(self.score.nameX, seqX), Sequence("", matching), Sequence(self.score.nameY, seqY)])
 
 if __name__ == "__main__":
     """

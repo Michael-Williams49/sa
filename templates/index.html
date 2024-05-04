@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Sequence Alignment</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <form method="post" action="{{ url_for('index') }}">
+            <div class="header">
+                <h1>Needleman-Wunsch Alignment</h1>
+                <button  class="align-btn">Align</button>
+            </div>
+            <div class="input-section">
+                <div class="sequence-input">
+                    <label for="seq1-name">Sequence 1</label>
+                    <input type="text" id="seq1-name" name="seq1_name" placeholder="Enter name for sequence 1" value="{{ seq1_name }}">
+                    <textarea id="seq1" name="seq1_sequence" placeholder="Enter sequence 1">{{ seq1_sequence }}</textarea>
+                </div>
+                <div class="sequence-input">
+                    <label for="seq2-name">Sequence 2</label>
+                    <input type="text" id="seq2-name" name="seq2_name" placeholder="Enter name for sequence 2" value="{{ seq2_name }}">
+                    <textarea id="seq2" name="seq2_sequence" placeholder="Enter sequence 2">{{ seq2_sequence }}</textarea>
+                </div>
+            </div>
+        </form>
+        {% if alignments %}
+            <h2>Result</h2>
+            <div class="result-section">
+                {% for alignment in alignments %}
+                    <div class="result-item">  
+                        <pre class="result-name"><br>{{ alignment[1].name }}<br><br>{{ alignment[3].name }}</pre>
+                        <pre class="result-output">{{ alignment[0].seq }}<br>{{ alignment[1].seq }}<br>{{ alignment[2].seq }}<br>{{ alignment[3].seq }}</pre>
+                    </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+    </div>
+</body>
+</html>
