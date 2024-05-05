@@ -1,3 +1,7 @@
+html {
+    -webkit-text-size-adjust: 100%; /* Prevent font scaling in landscape while allowing user zoom */
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -95,6 +99,7 @@ textarea {
 
 .result-item { /* Target the new container */
     background-color: #ffffff;
+    justify-content: space-between;
     font-family: monospace;
     white-space: pre;
     font-size: medium;
@@ -103,14 +108,15 @@ textarea {
 }
 
 .result-output {
-    width: 85%;
+    width: 84%;
     overflow-x: auto;
+    margin: 0px;
     padding-bottom: 20px;
 }
 
 .result-name {
-    width: 15%;
+    width: 14%;
     overflow-x: auto;
-    margin-right: 2%;
+    margin: 0px;
     padding-bottom: 20px;
 }
