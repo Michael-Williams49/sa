@@ -102,7 +102,7 @@ textarea {
     width: 85%;
     font-family: monospace;
     overflow-x: auto;
-    white-space: nowrap;
+    white-space: pre;
     font-size: medium;
     padding-bottom: 20px;
 }
@@ -113,7 +113,7 @@ textarea {
     text-align: right;
     margin-right: 2%;
     font-family: monospace;
-    white-space: nowrap;
+    white-space: pre;
     overflow-x: auto;
     font-size: medium;
     padding-bottom: 20px;
