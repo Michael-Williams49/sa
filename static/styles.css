@@ -87,34 +87,30 @@ textarea {
 .result-section {
     background-color: #ffffff;
     width: 100%;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
 }
 
 .result-item { /* Target the new container */
-    display: flex; /* Allow children to sit side-by-side */
+    background-color: #ffffff;
+    font-family: monospace;
+    white-space: pre;
+    font-size: medium;
+    display: flex;
     width: 100%; /* Allow to take up full width */
 }
 
 .result-output {
-    background-color: #ffffff;
     width: 85%;
-    font-family: monospace;
     overflow-x: auto;
-    white-space: pre;
-    font-size: medium;
     padding-bottom: 20px;
 }
 
 .result-name {
-    background-color: #ffffff;
     width: 15%;
-    text-align: right;
-    margin-right: 2%;
-    font-family: monospace;
-    white-space: pre;
     overflow-x: auto;
-    font-size: medium;
+    margin-right: 2%;
     padding-bottom: 20px;
 }
