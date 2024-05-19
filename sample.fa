@@ -1,0 +1,13 @@
+>sequence a
+abcacbababcabcbabcbabcdcdacbadbcabdcadcbadcbabdcba
+cdbacbabcbdabcabcbadbcbdabcbdacbabdcbabcbadcbdabcb
+cbadcbadbcabdcbabca
+
+>sequence b
+aabcdbcbabcbacbdabcbaddcbadbdcbdacbabcbdacbdbacbbca
+bcdbabcbadcbabcbadbcbadb
+
+this is the line separated by return
+
+>sequence c
+this sequence should not appear

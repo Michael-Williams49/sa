@@ -26,6 +26,10 @@
                     <input type="checkbox" id="show-all-alignments" name="show_all_alignments" {% if show_all_alignments %}checked{% endif %}>
                 </div>
                 <div class="parameter-item">
+                    <input type="file" id="file-input" accept=".fasta,.fa,.fna" hidden>
+                    <label for="file-input" class="file-button">FASTA File</label> 
+                </div>
+                <div class="parameter-item">
                     <button type="submit" class="align-btn">Align</button>
                 </div>
             </div>
@@ -57,3 +61,31 @@
     </div>
 </body>
 </html>
+<script>
+const fileInput = document.getElementById('file-input');
+const [seq1Input, seq2Input] = [document.getElementById('seq1'), document.getElementById('seq2')];
+const [seq1Name, seq2Name] = [document.getElementById('seq1-name'), document.getElementById('seq2-name')];
+
+fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        const sequences = parseFasta(reader.result).slice(0, 4); // Extract only the first 4 elements (2 names and 2 sequences)
+        [seq1Name.value, seq1Input.value, seq2Name.value, seq2Input.value] = sequences;
+    };
+
+    reader.readAsText(file);
+});
+
+function parseFasta(contents) {
+    return contents.split('>')
+        .filter(Boolean) 
+        .map(entry => {
+            const [name, ...sequenceLines] = entry.trim().split('\n');
+            return [name.trim(), sequenceLines.join('')]; 
+        })
+        .flat(); 
+}
+
+</script>
