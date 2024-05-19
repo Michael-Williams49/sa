@@ -71,7 +71,7 @@ class Scheme:
 
 # Implements the Needleman-Wunsch algorithm for sequence alignment
 class NWA:
-    def __init__(self, seqX: Sequence, seqY: Sequence, scoreScheme: Scheme = Scheme(1, -1, -1), preferMismatch: bool = True, allAlignment: bool = False):
+    def __init__(self, seqX: Sequence, seqY: Sequence, scoreScheme: Scheme = Scheme(1, -1, -1), preferMismatch: bool = True, allAlignment: bool = False, ruler = 10):
         """
         Initialize an NWA object with two sequences and optional parameters.
 
@@ -90,6 +90,7 @@ class NWA:
         else:
             self.pref = [1, 3, 2]  # Preference order: indel in X, indel in Y, match
         self.all = allAlignment
+        self.ruler = ruler
         self.alignment = []
 
         self.__initialize()
@@ -174,36 +175,260 @@ class NWA:
         seqY = ""
         indexX = 0
         indexY = 0
+        rulerX = ""
+        rulerY = ""
+        countX = 0
+        countY = 0
         for index in range(len(stack) - 1, -1, -1):
             if stack[index] == 1:  # Indel in X
                 indexX += 1
                 seqX += self.score.seqX[indexX]
                 seqY += "-"
+                if countX == 0:
+                    rulerX += str(indexX)
+                    countX = self.ruler - 1
+                    digitX = int(math.log10(indexX))
+                elif digitX == 0:
+                    countX -= 1
+                    rulerX += " "
+                else:
+                    countX -= 1
+                    digitX -= 1
+                rulerY += " "
             elif stack[index] == 2:  # Match or mismatch
                 indexX += 1
                 indexY += 1
                 seqX += self.score.seqX[indexX]
                 seqY += self.score.seqY[indexY]
+                if countX == 0:
+                    rulerX += str(indexX)
+                    countX = self.ruler - 1
+                    digitX = int(math.log10(indexX))
+                elif digitX == 0:
+                    countX -= 1
+                    rulerX += " "
+                else:
+                    countX -= 1
+                    digitX -= 1
+                if countY == 0:
+                    rulerY += str(indexY)
+                    countY = self.ruler - 1
+                    digitY = int(math.log10(indexY))
+                elif digitY == 0:
+                    countY -= 1
+                    rulerY += " "
+                else:
+                    countY -= 1
+                    digitY -= 1
             elif stack[index] == 3:  # Indel in Y
                 indexY += 1
                 seqX += "-"
                 seqY += self.score.seqY[indexY]
+                rulerX += " "
+                if countY == 0:
+                    rulerY += str(indexY)
+                    countY = self.ruler - 1
+                    digitY = int(math.log10(indexY))
+                elif digitY == 0:
+                    countY -= 1
+                    rulerY += " "
+                else:
+                    countY -= 1
+                    digitY -= 1
         matching = ""
         for i in range(len(seqX)):
             if seqX[i] == seqY[i]:
                 matching += "|"
             else:
                 matching += " "
-        counter = " " * len(seqX)
-        for count in range(0, len(seqX), 10):
-            digit = int(math.log10(count + 1)) + 1
-            counter = counter[:count] + str(count) + counter[count + digit:]
-        self.alignment.append([Sequence("", counter), Sequence(self.score.nameX, seqX), Sequence("", matching), Sequence(self.score.nameY, seqY)])
+        self.alignment.append([Sequence("", rulerX), Sequence(self.score.nameX, seqX), Sequence("", matching), Sequence(self.score.nameY, seqY), Sequence("", rulerY)])
+
+class SWA:
+    def __init__(self, seqX: Sequence, seqY: Sequence, scoreScheme: Scheme = Scheme(2, -1, -2), preferMismatch: bool = True, allAlignment: bool = False, ruler = 10):
+        """
+        Initialize an BWA object with two sequences and optional parameters.
+
+        Args:
+            seqX (Sequence): The first sequence.
+            seqY (Sequence): The second sequence.
+            scoreScheme (Scheme, optional): The scoring scheme for matches, mismatches, and indels. Defaults to Scheme(2, -1, -2).
+            preferMismatch (bool, optional): Whether to prefer mismatches over indels in case of a tie. Defaults to True.
+            allAlignment (bool, optional): Whether to find all possible alignments or only the optimal one. Defaults to False.
+        """
+        self.score = Table(seqX, seqY)
+        self.align = Table(seqX, seqY)
+        self.scheme = scoreScheme
+        if preferMismatch:
+            self.pref = [0, 2, 1, 3]  # Preference order: match, indel in X, indel in Y
+        else:
+            self.pref = [0, 1, 3, 2]  # Preference order: indel in X, indel in Y, match
+        self.all = allAlignment
+        self.ruler = ruler
+        self.alignment = []
+
+        self.__initialize()
+        self.__control()
+        stack = []
+        maxX = 0
+        maxY = 0
+        maxScore = 0
+        for i in range(len(self.score.seqX)):
+            for j in range(len(self.score.seqY)):
+                if self.score.data[i][j] > maxScore:
+                    maxScore = self.score.data[i][j]
+                    maxX = i
+                    maxY = j
+        self.__trace(maxX, maxY, stack)
+
+    def __initialize(self):
+        for i in range(1, len(self.score.seqY)):
+            self.score.data[0][i] = 0
+            self.align.data[0][i] = 0
+        for i in range(1, len(self.score.seqX)):
+            self.score.data[i][0] = 0
+            self.align.data[i][0] = 0
+
+    def __evaluate(self, i: int, j: int):
+        """
+        Evaluate the score and alignment for the given indices based on the scoring scheme and preference order.
+
+        Args:
+            i (int): The row index (corresponding to seqX).
+            j (int): The column index (corresponding to seqY).
+        """
+        options = [0, 0, 0, 0]
+        options[1] = self.score.data[i - 1][j] + self.scheme.indel  # Indel in X
+        options[2] = self.score.data[i - 1][j - 1]  # Match or mismatch
+        if self.score.seqX[i] == self.score.seqY[j]:
+            options[2] += self.scheme.match
+        else:
+            options[2] += self.scheme.mismatch
+        options[3] = self.score.data[i][j - 1] + self.scheme.indel  # Indel in Y
+        bestOption = max(options)
+        for index in self.pref:
+            if bestOption == options[index]:
+                self.score.data[i][j] = options[index]
+                self.align.data[i][j] = index + self.align.data[i][j] * 4  # Encode the preference order
+                if not self.all:
+                    break
+
+    def __control(self):
+        """
+        Control the evaluation of scores and alignments for all positions in the table.
+        """
+        for sum in range(2, len(self.score.seqX) + len(self.score.seqY) - 1):
+            for row in range(max(1, sum - len(self.score.seqY) + 1), min(sum, len(self.score.seqX))):
+                self.__evaluate(row, sum - row)
+                # print(self.score)  # Uncomment to print the score table after each evaluation
+
+    def __trace(self, i: int, j: int, stack: list):
+        """
+        Recursively trace back the optimal alignment path and store it in the stack.
+
+        Args:
+            i (int): The row index (corresponding to seqX).
+            j (int): The column index (corresponding to seqY).
+            stack (list): The list to store the alignment path.
+        """
+        if self.align.data[i][j] == 0:
+            self.__result(stack, i, j)
+            return
+        direction = self.align.data[i][j]
+        while direction != 0:
+            if direction % 4 == 1:
+                self.__trace(i - 1, j, stack + [1])  # Indel in X
+            elif direction % 4 == 2:
+                self.__trace(i - 1, j - 1, stack + [2])  # Match or mismatch
+            elif direction % 4 == 3:
+                self.__trace(i, j - 1, stack + [3])  # Indel in Y
+            direction //= 4
+
+    def __result(self, stack: list, indexX: int, indexY: int):
+        """
+        Construct the final alignment sequences from the traced alignment path.
+
+        Args:
+            stack (list): The list containing the alignment path.
+        """
+        seqX = ""
+        seqY = ""
+        rulerX = ""
+        rulerY = ""
+        digitX = 0
+        digitY = 0
+        countX = 0
+        countY = 0
+        for index in range(len(stack) - 1, -1, -1):
+            if stack[index] == 1:  # Indel in X
+                indexX += 1
+                seqX += self.score.seqX[indexX]
+                seqY += "-"
+                if countX == 0:
+                    rulerX += str(indexX)
+                    countX = self.ruler - 1
+                    digitX = int(math.log10(indexX))
+                elif digitX == 0:
+                    countX -= 1
+                    rulerX += " "
+                else:
+                    countX -= 1
+                    digitX -= 1
+                rulerY += " "
+            elif stack[index] == 2:  # Match or mismatch
+                indexX += 1
+                indexY += 1
+                seqX += self.score.seqX[indexX]
+                seqY += self.score.seqY[indexY]
+                if countX == 0:
+                    rulerX += str(indexX)
+                    countX = self.ruler - 1
+                    digitX = int(math.log10(indexX))
+                elif digitX == 0:
+                    countX -= 1
+                    rulerX += " "
+                else:
+                    countX -= 1
+                    digitX -= 1
+                if countY == 0:
+                    rulerY += str(indexY)
+                    countY = self.ruler - 1
+                    digitY = int(math.log10(indexY))
+                elif digitY == 0:
+                    countY -= 1
+                    rulerY += " "
+                else:
+                    countY -= 1
+                    digitY -= 1
+            elif stack[index] == 3:  # Indel in Y
+                indexY += 1
+                seqX += "-"
+                seqY += self.score.seqY[indexY]
+                rulerX += " "
+                if countY == 0:
+                    rulerY += str(indexY)
+                    countY = self.ruler - 1
+                    digitY = int(math.log10(indexY))
+                elif digitY == 0:
+                    countY -= 1
+                    rulerY += " "
+                else:
+                    countY -= 1
+                    digitY -= 1
+        matching = ""
+        for i in range(len(seqX)):
+            if seqX[i] == seqY[i]:
+                matching += "|"
+            else:
+                matching += " "
+        self.alignment.append([Sequence("", rulerX), Sequence(self.score.nameX, seqX), Sequence("", matching), Sequence(self.score.nameY, seqY), Sequence("", rulerY)])
 
 if __name__ == "__main__":
     """
     This is the main entry point of the program.
     It creates an example NWA object and prints the resulting alignment(s).
     """
-    example = NWA(Sequence("1", "abcdccdc"), Sequence("2", "abbcadad"))
-    print(example.alignment)
+    exampleNWA = NWA(Sequence("1", "abcdccdc"), Sequence("2", "abbcadad"))
+    print(exampleNWA.alignment)
+
+    exampleBWA = SWA(Sequence("1", "abcdabcadcba"), Sequence("2", "cdb"))
+    print(exampleBWA.alignment)

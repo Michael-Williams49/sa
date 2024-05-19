@@ -10,9 +10,26 @@
     <div class="container">
         <form method="post" action="{{ url_for('index') }}">
             <div class="header">
-                <h1>Needleman-Wunsch Alignment</h1>
-                <button  class="align-btn">Align</button>
+                <h1>Sequence Alignment</h1>
             </div>
+            <h2>Parameters</h2>
+            <div class="parameter-section">
+                <div class="parameter-item">
+                    <label for="algorithm">Algorithm</label>
+                    <select id="algorithm" name="algorithm">
+                        <option value="nwa" {% if selected_algorithm == 'nwa' %}selected{% endif %}>Needleman-Wunsch</option>
+                        <option value="swa" {% if selected_algorithm == 'swa' %}selected{% endif %}>Smith-Waterman</option>
+                    </select>
+                </div>
+                <div class="parameter-item">
+                    <label for="show-all-alignments">All optimal alignments</label>
+                    <input type="checkbox" id="show-all-alignments" name="show_all_alignments" {% if show_all_alignments %}checked{% endif %}>
+                </div>
+                <div class="parameter-item">
+                    <button type="submit" class="align-btn">Align</button>
+                </div>
+            </div>
+            <h2>Sequences</h2>
             <div class="input-section">
                 <div class="sequence-input">
                     <label for="seq1-name">Sequence 1</label>
@@ -31,8 +48,8 @@
             <div class="result-section">
                 {% for alignment in alignments %}
                     <div class="result-item">  
-                        <pre class="result-name"><br>{{ alignment[1].name }}<br><br>{{ alignment[3].name }}</pre>
-                        <pre class="result-output">{{ alignment[0].seq }}<br>{{ alignment[1].seq }}<br>{{ alignment[2].seq }}<br>{{ alignment[3].seq }}</pre>
+                        <pre class="result-name"><br>{{ alignment[1].name }}<br><br>{{ alignment[3].name }}<br></pre>
+                        <pre class="result-output">{{ alignment[0].seq }}<br>{{ alignment[1].seq }}<br>{{ alignment[2].seq }}<br>{{ alignment[3].seq }}<br>{{ alignment[4].seq }}</pre>
                     </div>
                 {% endfor %}
             </div>

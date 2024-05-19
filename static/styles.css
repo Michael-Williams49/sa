@@ -5,15 +5,16 @@ html {
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 4%;
+    padding: 2%;
 }
 
 h1 {
-    font-weight: lighter; 
+    font-weight: lighter;
 }
 
 h2 {
-    font-weight: normal; 
+    font-weight: normal;
+    margin-top: 20px;
 }
 
 .container {
@@ -26,97 +27,152 @@ h2 {
     justify-content: space-between;
     align-items: center;
     font-weight: thin;
+    margin-bottom: 20px;
+}
+
+.parameter-section {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.parameter-item {
+    font-size: 16px;
+    margin: 5px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.parameter-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-left: 10px;
+    margin-right: 10px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.parameter-item input[type="checkbox"]:checked {
+    background-color: #333;
+    border-color: #333;
+}
+
+.parameter-item input[type="checkbox"]:hover {
+    border-color: #666;
 }
 
 .align-btn {
-    background-color: white;
-    color: black;
-    font-size: medium;
-    padding: 10px;
-    margin: 5px;
-    border-width: 2px;
-    border-color: black;
+    background-color: #f2f2f2;
+    color: #333;
+    font-size: 16px;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s, color 0.3s; /* Add transition */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .align-btn:hover {
-    background-color: #e6e6e6; /* Slightly darker background on hover */
+    background-color: #e6e6e6;
 }
 
-.align-btn:active { /* Style for when the button is clicked */
-    background-color: rgb(60, 60, 60); 
-    color: rgb(220, 220, 220); 
+.align-btn:active {
+    background-color: #ccc;
+    color: #333;
 }
 
+select {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-repeat: no-repeat;
+    background-position: right 5px center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
 
 .input-section {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
 }
 
 .sequence-input {
-    width: 49%;
+    width: calc(50% - 5px);
 }
 
 label {
     display: block;
     font-weight: bold;
-    margin-bottom: 10px;
+    font-size: 16px;
 }
 
 input[type="text"],
 textarea {
     width: 100%;
-    padding: 10px;
-    font-size: medium;
+    padding: 8px;
+    font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
-    margin-bottom: 10px;
     resize: none;
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
 textarea {
-    height: 40vh;
-    font-size: medium;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-    resize: none;
+    height: 30vh;
 }
 
 .result-section {
-    background-color: #ffffff;
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    margin-bottom: 20px;
     box-sizing: border-box;
 }
 
-.result-item { /* Target the new container */
-    background-color: #ffffff;
+.result-item {
     justify-content: space-between;
     font-family: monospace;
     white-space: pre;
-    font-size: medium;
+    font-size: 16px;
     display: flex;
-    width: 100%; /* Allow to take up full width */
+    width: 100%;
+    margin: 10px;
 }
 
 .result-output {
-    width: 84%;
+    width: calc(85% - 5px);
     overflow-x: auto;
-    margin: 0px;
-    padding-bottom: 20px;
+    margin: 0;
 }
 
 .result-name {
-    width: 14%;
+    width: calc(15% - 5px);
     overflow-x: auto;
-    margin: 0px;
-    padding-bottom: 20px;
+    margin: 0;
+    text-align: right;
 }
