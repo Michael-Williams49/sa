@@ -33,7 +33,7 @@ h2 {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    display: flex;
+    /* display: flex; */
     flex-wrap: wrap;
     justify-content: space-between;
     margin-bottom: 20px;
@@ -54,9 +54,9 @@ h2 {
 
 .parameter-button {
     font-size: 16px;
-    margin: 5px;
     margin-left: auto;
     display: flex;
+    justify-content: right;
     align-items: center;
     flex-wrap: wrap;
 }
@@ -113,6 +113,7 @@ input[type="number"]:focus {
 select {
     margin-left: 5px;
     font-weight: normal;
+    color: black;
     padding: 8px;
     font-size: 16px;
     border: 1px solid #ccc;
@@ -159,6 +160,14 @@ select:active {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+}
+
+.input-button {
+    font-size: 16px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .sequence-input {
