@@ -15,6 +15,7 @@ h1 {
 h2 {
     font-weight: normal;
     margin-top: 20px;
+    margin-bottom: 10px;
 }
 
 .container {
@@ -33,10 +34,14 @@ h2 {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    /* display: flex; */
+    display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    margin-bottom: 20px;
+}
+
+.parameter-setting-panel {
+    min-width: 50%;
+    flex-grow: 1;
 }
 
 .parameter-item {
@@ -52,13 +57,18 @@ h2 {
     margin-right: auto;
 }
 
-.parameter-button {
+.parameter-button-panel {
     font-size: 16px;
+    min-width: 50%;
     margin-left: auto;
     display: flex;
     justify-content: right;
     align-items: center;
     flex-wrap: wrap;
+}
+
+.button-container {
+    margin: 5px;
 }
 
 .parameter-item input[type="checkbox"] {
@@ -111,7 +121,6 @@ input[type="number"]:focus {
 
 .file-button,
 select {
-    margin-left: 5px;
     font-weight: normal;
     color: black;
     padding: 8px;
@@ -136,7 +145,6 @@ select:active {
 }
 
 .align-btn {
-    margin: 5px;
     background-color: #f5f5f5;
     color: #333;
     font-size: 16px;
@@ -159,15 +167,15 @@ select:active {
 .input-section {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
 }
 
 .input-button {
     font-size: 16px;
-    margin-left: auto;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .sequence-input {
@@ -179,6 +187,8 @@ label {
     font-weight: bold;
     font-size: 16px;
     padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 input[type="text"],
@@ -201,7 +211,6 @@ textarea {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    margin-bottom: 20px;
     box-sizing: border-box;
 }
 
