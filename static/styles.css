@@ -26,50 +26,54 @@ h2 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: thin;
     margin-bottom: 20px;
 }
 
 .parameter-section {
-    width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
     margin-bottom: 20px;
 }
 
 .parameter-item {
     font-size: 16px;
     margin: 5px;
-    align-items: center;
-    justify-content: center;
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.parameter-item label {
+    padding-right: 10px;
+    margin-right: auto;
+}
+
+.parameter-button {
+    font-size: 16px;
+    margin: 5px;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
     flex-wrap: wrap;
 }
 
 .parameter-item input[type="checkbox"] {
     appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     width: 16px;
     height: 16px;
     border: 1px solid #ccc;
     border-radius: 3px;
     outline: none;
     cursor: pointer;
-    vertical-align: middle;
-    margin-left: 10px;
-    margin-right: 10px;
     transition: background-color 0.3s, border-color 0.3s;
 }
 
 .parameter-item input[type="checkbox"]:checked {
-    background-color: #333;
+    background-color: #666;
     border-color: #333;
 }
 
@@ -77,31 +81,62 @@ h2 {
     border-color: #666;
 }
 
-.file-button {
+input[type="number"] {
+    max-width: 70px;
     padding: 8px;
-    font-size: 14px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    appearance: textfield;
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"]:hover {
+    background-color: #e6e6e6;
+}
+
+input[type="number"]:focus {
+    outline: none;
+    border-color: #666;
+}
+
+.file-button,
+select {
+    margin-left: 5px;
     font-weight: normal;
+    padding: 8px;
+    font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #fff;
     appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
 }
 
-.file-button:hover {
+.file-button:hover,
+select:hover {
     background-color: #e6e6e6;
 }
 
-.file-button:active {
+.file-button:active,
+select:active {
     background-color: #ccc;
     color: #333;
 }
 
 .align-btn {
-    background-color: #fff;
+    margin: 5px;
+    background-color: #f5f5f5;
     color: #333;
     font-size: 16px;
     padding: 8px 16px;
@@ -120,30 +155,6 @@ h2 {
     color: #333;
 }
 
-select {
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    margin-left: 10px;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-select:hover {
-    background-color: #e6e6e6;
-}
-
-select:active {
-    background-color: #ccc;
-    color: #333;
-}
-
 .input-section {
     display: flex;
     justify-content: space-between;
@@ -158,6 +169,7 @@ label {
     display: block;
     font-weight: bold;
     font-size: 16px;
+    padding-right: 10px;
 }
 
 input[type="text"],
@@ -169,8 +181,7 @@ textarea {
     border-radius: 5px;
     box-sizing: border-box;
     resize: none;
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin: 5px 0;
 }
 
 textarea {
@@ -178,7 +189,6 @@ textarea {
 }
 
 .result-section {
-    width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -187,22 +197,24 @@ textarea {
 }
 
 .result-item {
+    display: flex;
     justify-content: space-between;
     font-family: monospace;
     white-space: pre;
     font-size: 16px;
-    display: flex;
-    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .result-output {
-    width: calc(85% - 5px);
-    overflow-x: auto;
+    width: 85%;
     margin: 0;
+    margin-left: 10px;
+    overflow-x: auto;
 }
 
 .result-name {
-    width: calc(15% - 5px);
+    width: 15%;
     overflow-x: auto;
     margin: 0;
     text-align: right;

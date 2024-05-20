@@ -14,34 +14,59 @@
             </div>
             <h2>Parameters</h2>
             <div class="parameter-section">
-                <div class="parameter-item">
-                    <label for="algorithm">Algorithm</label>
-                    <select id="algorithm" name="algorithm">
-                        <option value="nwa" {% if selected_algorithm == 'nwa' %}selected{% endif %}>Needleman-Wunsch</option>
-                        <option value="swa" {% if selected_algorithm == 'swa' %}selected{% endif %}>Smith-Waterman</option>
-                    </select>
+                <div>
+                    <div class="parameter-item">
+                        <label for="algorithm">Algorithm</label>
+                        <select id="algorithm" name="algorithm">
+                            <option value="nwa" {% if selected_algorithm == 'nwa' %}selected{% endif %}>Needleman-Wunsch</option>
+                            <option value="swa" {% if selected_algorithm == 'swa' %}selected{% endif %}>Smith-Waterman</option>
+                        </select>
+                    </div>
+                    <div class="parameter-item">
+                        <label for="show-all-alignments">All optimal alignments</label>
+                        <input type="checkbox" id="show-all-alignments" name="show_all_alignments" {% if show_all_alignments %}checked{% endif %}>
+                    </div>
+                    <div class="parameter-item">
+                        <label for="match-score">Match Score</label>
+                        <input type="number" id="match-score" name="match_score" value="{{ match_score }}" min="1">
+                    </div>
+                    <div class="parameter-item">
+                        <label for="mismatch-score">Mismatch Score</label>
+                        <input type="number" id="mismatch-score" name="mismatch_score" value="{{ mismatch_score }}" max="-1">
+                    </div>
+                    <div class="parameter-item">
+                        <label for="indel-score">Indel Score</label>
+                        <input type="number" id="indel-score" name="indel_score" value="{{ indel_score }}" max="-1">
+                    </div>
+                    <div class="parameter-item">
+                        <label for="ruler">Ruler</label>
+                        <input type="number" id="ruler" name="ruler" value="{{ ruler }}" min="5">
+                    </div>
                 </div>
-                <div class="parameter-item">
-                    <label for="show-all-alignments">All optimal alignments</label>
-                    <input type="checkbox" id="show-all-alignments" name="show_all_alignments" {% if show_all_alignments %}checked{% endif %}>
-                </div>
-                <div class="parameter-item">
+                <div class="parameter-button">
+                    <button id="example-input-btn" class="file-button">Example</button>
                     <input type="file" id="file-input" accept=".fasta,.fa,.fna" hidden>
-                    <label for="file-input" class="file-button">FASTA File</label> 
-                </div>
-                <div class="parameter-item">
+                    <label for="file-input" class="file-button">FASTA File</label>
                     <button type="submit" class="align-btn">Align</button>
                 </div>
             </div>
             <h2>Sequences</h2>
             <div class="input-section">
                 <div class="sequence-input">
-                    <label for="seq1-name">Sequence 1</label>
+                    <div class="parameter-button">
+                        <label for="seq1-name">Sequence 1</label>
+                        <input type="file" id="seq1-file" accept=".fasta,.fa,.fna" hidden>
+                        <label for="seq1-file" class="file-button">FASTA File</label>
+                    </div>
                     <input type="text" id="seq1-name" name="seq1_name" placeholder="Enter name for sequence 1" value="{{ seq1_name }}">
                     <textarea id="seq1" name="seq1_sequence" placeholder="Enter sequence 1">{{ seq1_sequence }}</textarea>
                 </div>
                 <div class="sequence-input">
-                    <label for="seq2-name">Sequence 2</label>
+                    <div class="parameter-button">
+                        <label for="seq2-name">Sequence 2</label>
+                        <input type="file" id="seq2-file" accept=".fasta,.fa,.fna" hidden>
+                        <label for="seq2-file" class="file-button">FASTA File</label>
+                    </div>
                     <input type="text" id="seq2-name" name="seq2_name" placeholder="Enter name for sequence 2" value="{{ seq2_name }}">
                     <textarea id="seq2" name="seq2_sequence" placeholder="Enter sequence 2">{{ seq2_sequence }}</textarea>
                 </div>
@@ -51,28 +76,85 @@
             <h2>Result</h2>
             <div class="result-section">
                 {% for alignment in alignments %}
-                    <div class="result-item">  
+                    <div class="result-item">
                         <pre class="result-name"><br>{{ alignment[1].name }}<br><br>{{ alignment[3].name }}<br></pre>
                         <pre class="result-output">{{ alignment[0].seq }}<br>{{ alignment[1].seq }}<br>{{ alignment[2].seq }}<br>{{ alignment[3].seq }}<br>{{ alignment[4].seq }}</pre>
                     </div>
                 {% endfor %}
             </div>
-            {% endif %}
+        {% endif %}
     </div>
 </body>
 </html>
 <script>
+const exampleInputBtn = document.getElementById('example-input-btn');
 const fileInput = document.getElementById('file-input');
+const seq1File = document.getElementById('seq1-file');
+const seq2File = document.getElementById('seq2-file');
 const [seq1Input, seq2Input] = [document.getElementById('seq1'), document.getElementById('seq2')];
 const [seq1Name, seq2Name] = [document.getElementById('seq1-name'), document.getElementById('seq2-name')];
+const exampleFasta = `>gi|2765658|emb|Z78533.1|CIZ78533 C.irapeanum 5.8S rRNA gene and ITS1 and ITS2 DNA
+CGTAACAAGGTTTCCGTAGGTGAACCTGCGGAAGGATCATTGATGAGACCGTGGAATAAACGATCGAGTG
+AATCCGGAGGACCGGTGTACTCAGCTCACCGGGGGCATTGCTCCCGTGGTGACCCTGATTTGTTGTTGGG
+CCGCCTCGGGAGCGTCCATGGCGGGTTTGAACCTCTAGCCCGGCGCAGTTTGGGCGCCAAGCCATATGAA
+AGCATCACCGGCGAATGGCATTGTCTTCCCCAAAACCCGGAGCGGCGGCGTGCTGTCGCGTGCCCAATGA
+ATTTTGATGACTCTCGCAAACGGGAATCTTGGCTCTTTGCATCGGATGGAAGGACGCAGCGAAATGCGAT
+AAGTGGTGTGAATTGCAAGATCCCGTGAACCATCGAGTCTTTTGAACGCAAGTTGCGCCCGAGGCCATCA
+GGCTAAGGGCACGCCTGCTTGGGCGTCGCGCTTCGTCTCTCTCCTGCCAATGCTTGCCCGGCATACAGCC
+AGGCCGGCGTGGTGCGGATGTGAAAGATTGGCCCCTTGTGCCTAGGTGCGGCGGGTCCAAGAGCTGGTGT
+TTTGATGGCCCGGAACCCGGCAAGAGGTGGACGGATGCTGGCAGCAGCTGCCGTGCGAATCCCCCATGTT
+GTCGTGCTTGTCGGACAGGCAGGAGAACCCTTCCGAACCCCAATGGAGGGCGGTTGACCGCCATTCGGAT
+GTGACCCCAGGTCAGGCGGGGGCACCCGCTGAGTTTACGC
+
+>gi|2765657|emb|Z78532.1|CCZ78532 C.californicum 5.8S rRNA gene and ITS1 and ITS2 DNA
+CGTAACAAGGTTTCCGTAGGTGAACCTGCGGAAGGATCATTGTTGAGACAACAGAATATATGATCGAGTG
+AATCTGGAGGACCTGTGGTAACTCAGCTCGTCGTGGCACTGCTTTTGTCGTGACCCTGCTTTGTTGTTGG
+GCCTCCTCAAGAGCTTTCATGGCAGGTTTGAACTTTAGTACGGTGCAGTTTGCGCCAAGTCATATAAAGC
+ATCACTGATGAATGACATTATTGTCAGAAAAAATCAGAGGGGCAGTATGCTACTGAGCATGCCAGTGAAT
+TTTTATGACTCTCGCAACGGATATCTTGGCTCTAACATCGATGAAGAACGCAGCTAAATGCGATAAGTGG
+TGTGAATTGCAGAATCCCGTGAACCATCGAGTCTTTGAACGCAAGTTGCGCTCGAGGCCATCAGGCTAAG
+GGCACGCCTGCCTGGGCGTCGTGTGTTGCGTCTCTCCTACCAATGCTTGCTTGGCATATCGCTAAGCTGG
+CATTATACGGATGTGAATGATTGGCCCCTTGTGCCTAGGTGCGGTGGGTCTAAGGATTGTTGCTTTGATG
+GGTAGGAATGTGGCACGAGGTGGAGAATGCTAACAGTCATAAGGCTGCTATTTGAATCCCCCATGTTGTT
+GTATTTTTTCGAACCTACACAAGAACCTAATTGAACCCCAATGGAGCTAAAATAACCATTGGGCAGTTGA
+TTTCCATTCAGATGCGACCCCAGGTCAGGCGGGGCCACCCGCTGAGTTGAGGC`
+
+exampleInputBtn.addEventListener('click', () => {
+    const sequences = parseFasta(exampleFasta).slice(0, 4);
+    [seq1Name.value, seq1Input.value, seq2Name.value, seq2Input.value] = sequences;
+});
 
 fileInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
 
     reader.onload = () => {
-        const sequences = parseFasta(reader.result).slice(0, 4); // Extract only the first 4 elements (2 names and 2 sequences)
+        const sequences = parseFasta(reader.result).slice(0, 4);
         [seq1Name.value, seq1Input.value, seq2Name.value, seq2Input.value] = sequences;
+    };
+
+    reader.readAsText(file);
+});
+
+seq1File.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        const sequences = parseFasta(reader.result).slice(0, 2);
+        [seq1Name.value, seq1Input.value] = sequences;
+    };
+
+    reader.readAsText(file);
+});
+
+seq2File.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = () => {
+        const sequences = parseFasta(reader.result).slice(0, 2);
+        [seq2Name.value, seq2Input.value] = sequences;
     };
 
     reader.readAsText(file);
@@ -80,12 +162,16 @@ fileInput.addEventListener('change', (event) => {
 
 function parseFasta(contents) {
     return contents.split('>')
-        .filter(Boolean) 
+        .filter(Boolean)
         .map(entry => {
             const [name, ...sequenceLines] = entry.trim().split('\n');
-            return [name.trim(), sequenceLines.join('')]; 
+            return [name.trim(), sequenceLines.join('')];
         })
-        .flat(); 
+        .flat();
 }
 
+const elements = document.querySelectorAll('.result-name, .result-output');
+elements.forEach(element => {
+    element.innerHTML = element.innerHTML.replace(/\n/g, ' ');
+});
 </script>
