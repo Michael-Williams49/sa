@@ -58,39 +58,6 @@ h2 {
     margin-right: auto;
 }
 
-.parameter-item select {
-    appearance: none;
-    /* Remove default browser dropdown arrow */
-    background-color: #ffffff;
-    border: 1px solid #cccccc;
-    padding: 10px;
-    padding-right: 40px;
-    /* Provide ample space for the arrow on the right */
-    outline: none;
-    border-radius: 5px;
-    font-size: 16px;
-    margin: 5px;
-    width: 200px;
-    /* Fixed width, adjust as necessary */
-    position: relative;
-}
-
-/* Adding custom arrow using background-image with larger size */
-.parameter-item select {
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right -1px center;
-    /* Adjust so the arrow doesn't overlap with text */
-    background-size: 28px;
-
-}
-
-
-/* Focus style */
-.parameter-item select:focus {
-    border-color: #0066cc;
-}
-
 .parameter-button-panel {
     font-size: 16px;
     min-width: 50%;
