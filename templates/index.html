@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
     <title>Sequence Alignment</title>
     <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
+
 <body>
     <div class="container">
         <form method="post" action="{{ url_for('index') }}">
@@ -18,13 +21,17 @@
                     <div class="parameter-item">
                         <label for="algorithm">Algorithm</label>
                         <select id="algorithm" name="algorithm">
-                            <option value="nwa" {% if selected_algorithm == 'nwa' %}selected{% endif %}>Needleman-Wunsch</option>
-                            <option value="swa" {% if selected_algorithm == 'swa' %}selected{% endif %}>Smith-Waterman</option>
+                            <option value="nwa" {% if selected_algorithm=='nwa' %}selected{% endif %}>Needleman-Wunsch
+                            </option>
+                            <option value="swa" {% if selected_algorithm=='swa' %}selected{% endif %}>Smith-Waterman
+                            </option>
                         </select>
                     </div>
-                    <div class="parameter-item">
+
+                    <div class="parameter-item" onclick="toggleCheckbox('show-all-alignments')">
                         <label for="show-all-alignments">All optimal alignments</label>
-                        <input type="checkbox" id="show-all-alignments" name="show_all_alignments" {% if show_all_alignments %}checked{% endif %}>
+                        <input type="checkbox" id="show-all-alignments" name="show_all_alignments" {% if
+                            show_all_alignments %}checked{% endif %}>
                     </div>
                     <div class="parameter-item">
                         <label for="match-score">Match Score</label>
@@ -32,7 +39,8 @@
                     </div>
                     <div class="parameter-item">
                         <label for="mismatch-score">Mismatch Score</label>
-                        <input type="number" id="mismatch-score" name="mismatch_score" value="{{ mismatch_score }}" max="-1">
+                        <input type="number" id="mismatch-score" name="mismatch_score" value="{{ mismatch_score }}"
+                            max="-1">
                     </div>
                     <div class="parameter-item">
                         <label for="indel-score">Indel Score</label>
@@ -42,7 +50,22 @@
                         <label for="ruler">Ruler</label>
                         <input type="number" id="ruler" name="ruler" value="{{ ruler }}" min="5">
                     </div>
+                    <div class="parameter-item">
+                        <label for="scoring-matrix">Scoring Matrix</label>
+                        <select id="scoring-matrix" name="scoring_matrix" onchange="updateParameters()">
+                            <option value="transition-transversion" {% if scoring_matrix=='transition-transversion'
+                                %}selected{% endif %}>Transition-Transversion Matrix</option>
+                            <option value="unitary" {% if scoring_matrix=='unitary' %}selected{% endif %}>Unitary Matrix
+                            </option>
+                            <option value="pam" {% if scoring_matrix=='pam' %}selected{% endif %}>PAM</option>
+                        </select>
+
+                    </div>
+
+
                 </div>
+
+
                 <div class="parameter-button-panel">
                     <div class="button-container">
                         <button id="example-input-btn" class="file-button">Example</button>
@@ -52,7 +75,8 @@
                         <label for="file-input" class="file-button">FASTA File</label>
                     </div>
                     <div class="button-container">
-                        <button type="submit" class="align-btn">Align</button>
+                        <button type="button" class="align-btn" onclick="submitAndScroll()">Align</button>
+
                     </div>
                 </div>
             </div>
@@ -64,8 +88,10 @@
                         <input type="file" id="seq1-file" accept=".fasta,.fa,.fna" hidden>
                         <label for="seq1-file" class="file-button">FASTA File</label>
                     </div>
-                    <input type="text" id="seq1-name" name="seq1_name" placeholder="Enter name for sequence 1" value="{{ seq1_name }}">
-                    <textarea id="seq1" name="seq1_sequence" placeholder="Enter sequence 1">{{ seq1_sequence }}</textarea>
+                    <input type="text" id="seq1-name" name="seq1_name" placeholder="Enter name for sequence 1"
+                        value="{{ seq1_name }}">
+                    <textarea id="seq1" name="seq1_sequence"
+                        placeholder="Enter sequence 1">{{ seq1_sequence }}</textarea>
                 </div>
                 <div class="sequence-input">
                     <div class="input-button">
@@ -73,33 +99,45 @@
                         <input type="file" id="seq2-file" accept=".fasta,.fa,.fna" hidden>
                         <label for="seq2-file" class="file-button">FASTA File</label>
                     </div>
-                    <input type="text" id="seq2-name" name="seq2_name" placeholder="Enter name for sequence 2" value="{{ seq2_name }}">
-                    <textarea id="seq2" name="seq2_sequence" placeholder="Enter sequence 2">{{ seq2_sequence }}</textarea>
+                    <input type="text" id="seq2-name" name="seq2_name" placeholder="Enter name for sequence 2"
+                        value="{{ seq2_name }}">
+                    <textarea id="seq2" name="seq2_sequence"
+                        placeholder="Enter sequence 2">{{ seq2_sequence }}</textarea>
                 </div>
             </div>
         </form>
         {% if alignments %}
-            <h2>Result</h2>
-            <div class="result-section">
-                {% for alignment in alignments %}
-                    <div class="result-item">
-                        <pre class="result-name"><br>{{ alignment[1].name }}<br><br>{{ alignment[3].name }}<br></pre>
-                        <pre class="result-output">{{ alignment[0].seq }}<br>{{ alignment[1].seq }}<br>{{ alignment[2].seq }}<br>{{ alignment[3].seq }}<br>{{ alignment[4].seq }}</pre>
-                    </div>
-                {% endfor %}
+        <h2 id="result_section">Result</h2>
+        <div class="result-section">
+            {% for alignment in alignments %}
+            <div class="result-item">
+                <pre class="result-name"><br>{{ alignment[1].name }}<br><br>{{ alignment[3].name }}<br></pre>
+                <pre
+                    class="result-output">{{ alignment[0].seq }}<br>{{ alignment[1].seq }}<br>{{ alignment[2].seq }}<br>{{ alignment[3].seq }}<br>{{ alignment[4].seq }}</pre>
+
+
             </div>
-        {% endif %}
-    </div>
+            {% endfor %}
+            {% endif %}
+
+
+
+
+
+
+
+
 </body>
+
 </html>
 <script>
-const exampleInputBtn = document.getElementById('example-input-btn');
-const fileInput = document.getElementById('file-input');
-const seq1File = document.getElementById('seq1-file');
-const seq2File = document.getElementById('seq2-file');
-const [seq1Input, seq2Input] = [document.getElementById('seq1'), document.getElementById('seq2')];
-const [seq1Name, seq2Name] = [document.getElementById('seq1-name'), document.getElementById('seq2-name')];
-const exampleFasta = `>gi|2765658|emb|Z78533.1|CIZ78533 C.irapeanum 5.8S rRNA gene and ITS1 and ITS2 DNA
+    const exampleInputBtn = document.getElementById('example-input-btn');
+    const fileInput = document.getElementById('file-input');
+    const seq1File = document.getElementById('seq1-file');
+    const seq2File = document.getElementById('seq2-file');
+    const [seq1Input, seq2Input] = [document.getElementById('seq1'), document.getElementById('seq2')];
+    const [seq1Name, seq2Name] = [document.getElementById('seq1-name'), document.getElementById('seq2-name')];
+    const exampleFasta = `>gi|2765658|emb|Z78533.1|CIZ78533 C.irapeanum 5.8S rRNA gene and ITS1 and ITS2 DNA
 CGTAACAAGGTTTCCGTAGGTGAACCTGCGGAAGGATCATTGATGAGACCGTGGAATAAACGATCGAGTG
 AATCCGGAGGACCGGTGTACTCAGCTCACCGGGGGCATTGCTCCCGTGGTGACCCTGATTTGTTGTTGGG
 CCGCCTCGGGAGCGTCCATGGCGGGTTTGAACCTCTAGCCCGGCGCAGTTTGGGCGCCAAGCCATATGAA
@@ -125,59 +163,114 @@ GGTAGGAATGTGGCACGAGGTGGAGAATGCTAACAGTCATAAGGCTGCTATTTGAATCCCCCATGTTGTT
 GTATTTTTTCGAACCTACACAAGAACCTAATTGAACCCCAATGGAGCTAAAATAACCATTGGGCAGTTGA
 TTTCCATTCAGATGCGACCCCAGGTCAGGCGGGGCCACCCGCTGAGTTGAGGC`
 
-exampleInputBtn.addEventListener('click', () => {
-    const sequences = parseFasta(exampleFasta).slice(0, 4);
-    [seq1Name.value, seq1Input.value, seq2Name.value, seq2Input.value] = sequences;
-});
-
-fileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = () => {
-        const sequences = parseFasta(reader.result).slice(0, 4);
+    exampleInputBtn.addEventListener('click', () => {
+        const sequences = parseFasta(exampleFasta).slice(0, 4);
         [seq1Name.value, seq1Input.value, seq2Name.value, seq2Input.value] = sequences;
-    };
+    });
 
-    reader.readAsText(file);
-});
+    fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
 
-seq1File.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+        reader.onload = () => {
+            const sequences = parseFasta(reader.result).slice(0, 4);
+            [seq1Name.value, seq1Input.value, seq2Name.value, seq2Input.value] = sequences;
+        };
 
-    reader.onload = () => {
-        const sequences = parseFasta(reader.result).slice(0, 2);
-        [seq1Name.value, seq1Input.value] = sequences;
-    };
+        reader.readAsText(file);
+    });
 
-    reader.readAsText(file);
-});
+    seq1File.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
 
-seq2File.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
+        reader.onload = () => {
+            const sequences = parseFasta(reader.result).slice(0, 2);
+            [seq1Name.value, seq1Input.value] = sequences;
+        };
 
-    reader.onload = () => {
-        const sequences = parseFasta(reader.result).slice(0, 2);
-        [seq2Name.value, seq2Input.value] = sequences;
-    };
+        reader.readAsText(file);
+    });
 
-    reader.readAsText(file);
-});
+    seq2File.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
 
-function parseFasta(contents) {
-    return contents.split('>')
-        .filter(Boolean)
-        .map(entry => {
-            const [name, ...sequenceLines] = entry.trim().split('\n');
-            return [name.trim(), sequenceLines.join('')];
-        })
-        .flat();
-}
+        reader.onload = () => {
+            const sequences = parseFasta(reader.result).slice(0, 2);
+            [seq2Name.value, seq2Input.value] = sequences;
+        };
 
-const elements = document.querySelectorAll('.result-name, .result-output');
-elements.forEach(element => {
-    element.innerHTML = element.innerHTML.replace(/\n/g, ' ');
-});
+        reader.readAsText(file);
+    });
+
+    function parseFasta(contents) {
+        return contents.split('>')
+            .filter(Boolean)
+            .map(entry => {
+                const [name, ...sequenceLines] = entry.trim().split('\n');
+                return [name.trim(), sequenceLines.join('')];
+            })
+            .flat();
+    }
+
+    const elements = document.querySelectorAll('.result-name, .result-output');
+    elements.forEach(element => {
+        element.innerHTML = element.innerHTML.replace(/\n/g, ' ');
+    });
+
+    function addAnchor() {
+        const form = document.querySelector('form');
+        form.action += "#result_section";
+    }
+
+    function submitAndScroll() {
+        const form = document.querySelector('form');
+        form.action += "#result_section";
+        const resultSection = document.getElementById('result_section');
+        if (resultSection) {
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        setTimeout(() => {
+            form.submit();
+        }, 500); // 延迟表单提交，以便用户可以看到平滑滚动效果
+    }
+
+    function scrollToResults() {
+        if (window.location.hash === "#result_section") {
+            const resultSection = document.getElementById('result_section');
+            if (resultSection) {
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    }
+
+    window.onload = scrollToResults;
+    function updateParameters() {
+        const matchScoreInput = document.getElementById('match-score');
+        const mismatchScoreInput = document.getElementById('mismatch-score');
+        const indelScoreInput = document.getElementById('indel-score');
+        const scoringMatrix = document.getElementById('scoring-matrix').value;
+
+        if (scoringMatrix === 'transition-transversion') {
+            matchScoreInput.value = 2;
+            mismatchScoreInput.value = -1;
+            indelScoreInput.value = -2;
+        } else if (scoringMatrix === 'unitary') {
+            matchScoreInput.value = 1;
+            mismatchScoreInput.value = -1;
+            indelScoreInput.value = -1;
+        } else if (scoringMatrix === 'pam') {
+            matchScoreInput.value = 1;
+            mismatchScoreInput.value = -2;
+            indelScoreInput.value = -1;
+        }
+    }
+
+
+
+
+
+
+
 </script>
