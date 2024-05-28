@@ -102,7 +102,7 @@ h2 {
     min-width: 50%;
     margin-left: auto;
     display: flex;
-    justify-content: right;
+    justify-content: space-evenly;
     align-items: center;
     flex-wrap: wrap;
 }
@@ -273,7 +273,7 @@ textarea {
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
-    margin:1%
+    margin: 1%
 }
 
 .result-item {
