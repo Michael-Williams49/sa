@@ -239,6 +239,7 @@ select:active {
 
 .sequence-input {
     width: calc(50% - 5px);
+    padding-left: 1%;
 }
 
 label {
@@ -272,6 +273,7 @@ textarea {
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
+    margin:1%
 }
 
 .result-item {
