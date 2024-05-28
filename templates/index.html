@@ -12,13 +12,23 @@
 <body>
     <!-- animation -->
     <div class="loader loader3"></div>
+    <!-- header -->
+    <div class="header">
+        <h1>Sequence Alignment</h1>
+        <p>Final Project_Sequence Alignment</p>
+    </div>
+
+    <div class="topnav">
+        <a href="https://github.com/Michael-Williams49/sa.git">Find the project source code on github
+        </a>
+    </div>
 
 
     <div class="container">
         <form method="post" action="{{ url_for('index') }}">
-            <div class="header">
+            <!-- <div class="header">
                 <h1>Sequence Alignment</h1>
-            </div>
+            </div> -->
             <h2>Parameters</h2>
             <div class="parameter-section">
                 <div class="parameter-setting-panel">
@@ -121,7 +131,13 @@
 
 
             </div>
+
+
+
             {% endfor %}
+
+
+
             {% endif %}
 
 
