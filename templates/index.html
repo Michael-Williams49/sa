@@ -10,6 +10,10 @@
 </head>
 
 <body>
+    <!-- animation -->
+    <div class="loader loader3"></div>
+
+
     <div class="container">
         <form method="post" action="{{ url_for('index') }}">
             <div class="header">
@@ -266,6 +270,14 @@ TTTCCATTCAGATGCGACCCCAGGTCAGGCGGGGCCACCCGCTGAGTTGAGGC`
             indelScoreInput.value = -1;
         }
     }
+
+    // loading animation
+
+    window.onload = function () {
+
+        var loader = document.querySelector('.loader');
+        loader.style.display = 'none';
+    };
 
 
 
