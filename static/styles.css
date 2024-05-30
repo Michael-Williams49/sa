@@ -95,6 +95,7 @@ h2 {
     padding-right: 10px;
     margin-right: auto;
 
+
 }
 
 .parameter-button-panel {
@@ -250,6 +251,7 @@ label {
     padding-left: 1%;
     padding-top: 10px;
     padding-bottom: 10px;
+    white-space: nowrap;
 }
 
 input[type="text"],
