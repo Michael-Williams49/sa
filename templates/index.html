@@ -126,7 +126,11 @@
                         placeholder="Enter sequence 2">{{ seq2_sequence }}</textarea>
                 </div>
             </div>
+
         </form>
+        {% if file_url %}
+        <p>Download your alignment file: <a href="{{ url_for('uploaded_file', filename=file_url) }}">Download</a></p>
+        {% endif %}
         {% if alignments %}
         <h2 id="result_section">Result</h2>
         <div class="result-section">

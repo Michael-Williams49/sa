@@ -1,4 +1,5 @@
 from aligner import NWA, Sequence, Scheme
+import math
 
 
 def process_blocks(seqA, seqB, block_size):
@@ -50,28 +51,29 @@ def process_blocks(seqA, seqB, block_size):
     # reconstruct the global alignment from global_alignment_data
     alignmentA, alignmentB = "", ""
     i, j = m, n
+    stack = []
     while i > 0 or j > 0:
         if i > 0 and j > 0 and global_alignment_data[i][j] == global_alignment_data[i-1][j-1] + (scheme.match if seqA[i-1] == seqB[j-1] else scheme.mismatch):
             alignmentA = seqA[i-1] + alignmentA
             alignmentB = seqB[j-1] + alignmentB
+            stack.append(2)  # match or mismatch
             i -= 1
             j -= 1
         elif i > 0 and global_alignment_data[i][j] == global_alignment_data[i-1][j] + scheme.indel:
             alignmentA = seqA[i-1] + alignmentA
             alignmentB = '-' + alignmentB
+            stack + [1]  # indel in x
             i -= 1
         else:
             alignmentA = '-' + alignmentA
             alignmentB = seqB[j-1] + alignmentB
+            stack+[2]  # indel in y
             j -= 1
-    for row in global_alignment_data:
-        print("\t".join(map(str, row)))
 
+    # for row in global_alignment_data:
+    #     print("\t".join(map(str, row)))
 
-    return alignmentA, alignmentB
-
-        
-    
+    return alignmentA, alignmentB, stack
 
 
 # test block
@@ -82,7 +84,7 @@ def test_process_blocks():
 
     process_blocks(seqA, seqB, block_size)
 
-    alignmentA, alignmentB = process_blocks(seqA, seqB, 3)
+    alignmentA, alignmentB, stack = process_blocks(seqA, seqB, 3)
     print("Alignment A:", alignmentA)
     print("Alignment B:", alignmentB)
 
