@@ -1,5 +1,7 @@
 import math
 # Represents a sequence with a name and a sequence string
+
+
 class Sequence:
     def __init__(self, name: str, seq: str):
         """
@@ -14,11 +16,13 @@ class Sequence:
 
     def __repr__(self):
         return f"{self.name}: {self.seq}"
-    
+
     def to_dict(self):
         return {self.name: self.seq}
 
 # Represents a table for storing scores and alignments
+
+
 class Table:
     def __init__(self, seqX: Sequence, seqY: Sequence):
         """
@@ -32,7 +36,8 @@ class Table:
         self.seqY = "-" + seqY.seq  # Add a gap character at the beginning
         self.nameX = seqX.name
         self.nameY = seqY.name
-        self.data = [[0 for _ in range(len(self.seqY))] for _ in range(len(self.seqX))]
+        self.data = [[0 for _ in range(len(self.seqY))]
+                     for _ in range(len(self.seqX))]
 
     def __repr__(self):
         """
@@ -49,12 +54,15 @@ class Table:
         for row in range(len(self.seqX)):
             result += self.seqX[row] + "\t"  # Add the sequence X character
             for col in range(len(self.seqY)):
-                result += str(self.data[row][col]) + "\t"  # Add the score or alignment value
+                # Add the score or alignment value
+                result += str(self.data[row][col]) + "\t"
             result += "\n"
         result += "\n"
         return result
 
 # Represents a scoring scheme for matches, mismatches, and indels
+
+
 class Scheme:
     def __init__(self, match: int, mismatch: int, indel: int):
         """
@@ -70,8 +78,10 @@ class Scheme:
         self.indel = indel
 
 # Implements the Needleman-Wunsch algorithm for sequence alignment
+
+
 class NWA:
-    def __init__(self, seqX: Sequence, seqY: Sequence, scoreScheme: Scheme = Scheme(1, -1, -1), preferMismatch: bool = True, allAlignment: bool = False, ruler = 10):
+    def __init__(self, seqX: Sequence, seqY: Sequence, scoreScheme: Scheme = Scheme(1, -1, -1), preferMismatch: bool = True, allAlignment: bool = False, ruler=10, initial_col_data=None, initial_row_data=None, block_start_row=0, block_start_col=0):
         """
         Initialize an NWA object with two sequences and optional parameters.
 
@@ -86,12 +96,18 @@ class NWA:
         self.align = Table(seqX, seqY)
         self.scheme = scoreScheme
         if preferMismatch:
-            self.pref = [2, 1, 3]  # Preference order: match, indel in X, indel in Y
+            # Preference order: match, indel in X, indel in Y
+            self.pref = [2, 1, 3]
         else:
-            self.pref = [1, 3, 2]  # Preference order: indel in X, indel in Y, match
+            # Preference order: indel in X, indel in Y, match
+            self.pref = [1, 3, 2]
         self.all = allAlignment
         self.ruler = ruler
         self.alignment = []
+        self.initial_col_data = initial_col_data
+        self.initial_row_data = initial_row_data
+        self.block_start_row = block_start_row
+        self.block_start_col = block_start_col
 
         self.__initialize()
         self.__control()
@@ -100,14 +116,33 @@ class NWA:
 
     def __initialize(self):
         """
-        Initialize the score and alignment tables with base cases for indels.
-        """
-        for i in range(1, len(self.score.seqY)):
-            self.score.data[0][i] += self.scheme.indel
-            self.align.data[0][i] = 3  # Indel in Y
-        for i in range(1, len(self.score.seqX)):
-            self.score.data[i][0] += self.scheme.indel
-            self.align.data[i][0] = 1  # Indel in X
+       Initialize the score and alignment tables with base cases for indels.
+       Takes into account the global position of the block within the larger sequence.
+       """
+    # Initialize the first column with additional checks for initial_col_data
+        # Global row index for the start of the block
+        global_index_offset_row = self.block_start_row
+        # Global column index for the start of the block
+        global_index_offset_col = self.block_start_col
+
+        for i in range(0, len(self.score.seqX)):
+            global_i = global_index_offset_row + i  # Global index for this row
+            if self.initial_col_data and i < len(self.initial_col_data):
+                self.score.data[i][0] = self.initial_col_data[i]
+            else:
+                self.score.data[i][0] = self.scheme.indel * global_i
+            # Indel in X, representing a gap in sequence Y
+            self.align.data[i][0] = 1
+
+    #  Initialize the first row with additional checks for initial_row_data
+        for j in range(0, len(self.score.seqY)):
+            global_j = global_index_offset_col + j  # Global index for this column
+            if self.initial_row_data and j < len(self.initial_row_data):
+                self.score.data[0][j] = self.initial_row_data[j]
+            else:
+                self.score.data[0][j] = self.scheme.indel * global_j
+            # Indel in Y, representing a gap in sequence X
+            self.align.data[0][j] = 3
 
     def __evaluate(self, i: int, j: int):
         """
@@ -118,18 +153,21 @@ class NWA:
             j (int): The column index (corresponding to seqY).
         """
         options = [0, 0, 0, 0]
-        options[1] = self.score.data[i - 1][j] + self.scheme.indel  # Indel in X
+        options[1] = self.score.data[i - 1][j] + \
+            self.scheme.indel  # Indel in X
         options[2] = self.score.data[i - 1][j - 1]  # Match or mismatch
         if self.score.seqX[i] == self.score.seqY[j]:
             options[2] += self.scheme.match
         else:
             options[2] += self.scheme.mismatch
-        options[3] = self.score.data[i][j - 1] + self.scheme.indel  # Indel in Y
+        options[3] = self.score.data[i][j - 1] + \
+            self.scheme.indel  # Indel in Y
         bestOption = max(options[1:])
         for index in self.pref:
             if bestOption == options[index]:
                 self.score.data[i][j] = options[index]
-                self.align.data[i][j] = index + self.align.data[i][j] * 4  # Encode the preference order
+                # Encode the preference order
+                self.align.data[i][j] = index + self.align.data[i][j] * 4
                 if not self.all:
                     break
 
@@ -241,10 +279,12 @@ class NWA:
                 matching += "|"
             else:
                 matching += " "
-        self.alignment.append([Sequence("", rulerX), Sequence(self.score.nameX, seqX), Sequence("", matching), Sequence(self.score.nameY, seqY), Sequence("", rulerY)])
+        self.alignment.append([Sequence("", rulerX), Sequence(self.score.nameX, seqX), Sequence(
+            "", matching), Sequence(self.score.nameY, seqY), Sequence("", rulerY)])
+
 
 class SWA:
-    def __init__(self, seqX: Sequence, seqY: Sequence, scoreScheme: Scheme = Scheme(2, -1, -2), preferMismatch: bool = True, allAlignment: bool = False, ruler = 10):
+    def __init__(self, seqX: Sequence, seqY: Sequence, scoreScheme: Scheme = Scheme(2, -1, -2), preferMismatch: bool = True, allAlignment: bool = False, ruler=10):
         """
         Initialize an BWA object with two sequences and optional parameters.
 
@@ -259,9 +299,11 @@ class SWA:
         self.align = Table(seqX, seqY)
         self.scheme = scoreScheme
         if preferMismatch:
-            self.pref = [0, 2, 1, 3]  # Preference order: match, indel in X, indel in Y
+            # Preference order: match, indel in X, indel in Y
+            self.pref = [0, 2, 1, 3]
         else:
-            self.pref = [0, 1, 3, 2]  # Preference order: indel in X, indel in Y, match
+            # Preference order: indel in X, indel in Y, match
+            self.pref = [0, 1, 3, 2]
         self.all = allAlignment
         self.ruler = ruler
         self.alignment = []
@@ -297,18 +339,21 @@ class SWA:
             j (int): The column index (corresponding to seqY).
         """
         options = [0, 0, 0, 0]
-        options[1] = self.score.data[i - 1][j] + self.scheme.indel  # Indel in X
+        options[1] = self.score.data[i - 1][j] + \
+            self.scheme.indel  # Indel in X
         options[2] = self.score.data[i - 1][j - 1]  # Match or mismatch
         if self.score.seqX[i] == self.score.seqY[j]:
             options[2] += self.scheme.match
         else:
             options[2] += self.scheme.mismatch
-        options[3] = self.score.data[i][j - 1] + self.scheme.indel  # Indel in Y
+        options[3] = self.score.data[i][j - 1] + \
+            self.scheme.indel  # Indel in Y
         bestOption = max(options)
         for index in self.pref:
             if bestOption == options[index]:
                 self.score.data[i][j] = options[index]
-                self.align.data[i][j] = index + self.align.data[i][j] * 4  # Encode the preference order
+                # Encode the preference order
+                self.align.data[i][j] = index + self.align.data[i][j] * 4
                 if not self.all:
                     break
 
@@ -420,7 +465,9 @@ class SWA:
                 matching += "|"
             else:
                 matching += " "
-        self.alignment.append([Sequence("", rulerX), Sequence(self.score.nameX, seqX), Sequence("", matching), Sequence(self.score.nameY, seqY), Sequence("", rulerY)])
+        self.alignment.append([Sequence("", rulerX), Sequence(self.score.nameX, seqX), Sequence(
+            "", matching), Sequence(self.score.nameY, seqY), Sequence("", rulerY)])
+
 
 if __name__ == "__main__":
     """

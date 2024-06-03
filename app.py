@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
 from aligner import Sequence, NWA, SWA, Scheme
+from LSA2 import process_blocks
 
 app = Flask(__name__)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -23,14 +25,38 @@ def index():
 
         score_scheme = Scheme(match_score, mismatch_score, indel_score)
 
-        if selected_algorithm == 'nwa':
-            aligner = NWA(seq1, seq2, score_scheme, allAlignment=show_all_alignments, ruler=ruler)
-        elif selected_algorithm == 'swa':
-            aligner = SWA(seq1, seq2, score_scheme, allAlignment=show_all_alignments, ruler=ruler)
+        # check if the sequence is too long
+        if len(seq1_sequence) > 1 and len(seq2_sequence) > 1:
+            # Use LSA2 for large sequences
+            aligner_1, aligner_2 = process_blocks(
+                seq1_sequence, seq2_sequence, 100)
+
+            class aligenr(aligner_1, aligner_2):
+                def __init__(self):
+                    self.alignment = aligner_1
+
+        else:
+
+            # Choose the algorithm based on user selection
+            if selected_algorithm == 'nwa':
+                aligner = NWA(seq1, seq2, score_scheme,
+                              allAlignment=show_all_alignments, ruler=ruler)
+
+            elif selected_algorithm == 'swa':
+                aligner = SWA(seq1, seq2, score_scheme,
+                              allAlignment=show_all_alignments, ruler=ruler)
+
+        # score_scheme = Scheme(match_score, mismatch_score, indel_score)
+
+        # if selected_algorithm == 'nwa':
+        #     aligner = NWA(seq1, seq2, score_scheme, allAlignment=show_all_alignments, ruler=ruler)
+        # elif selected_algorithm == 'swa':
+        #     aligner = SWA(seq1, seq2, score_scheme, allAlignment=show_all_alignments, ruler=ruler)
 
         return render_template('index.html', seq1_name=seq1_name, seq1_sequence=seq1_sequence, seq2_name=seq2_name, seq2_sequence=seq2_sequence, alignments=aligner.alignment, selected_algorithm=selected_algorithm, show_all_alignments=show_all_alignments, match_score=match_score, mismatch_score=mismatch_score, indel_score=indel_score, ruler=ruler)
 
     return render_template('index.html', match_score=2, mismatch_score=-1, indel_score=-2, ruler=10)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
