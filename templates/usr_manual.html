@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sequence Alignment User Manual</title>
+    <link href='https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext'
+        rel='stylesheet' type='text/css' />
+    <style type='text/css'>
+        html {
+            overflow-x: initial !important;
+        }
+
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --select-text-bg-color: #B5D6FC;
+            --select-text-font-color: auto;
+            --monospace: "Lucida Console", Consolas, "Courier", monospace;
+            --title-bar-height: 20px;
+        }
+
+        .mac-os-11 {
+            --title-bar-height: 28px;
+        }
+
+        html {
+            font-size: 14px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            margin: 0px;
+            padding: 0px;
+            height: auto;
+            bottom: 0px;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            font-size: 1rem;
+            line-height: 1.42857;
+            overflow-x: hidden;
+            background: inherit;
+            tab-size: 4;
+        }
+
+        iframe {
+            margin: auto;
+        }
+
+        a.url {
+            word-break: break-all;
+        }
+
+        a:active,
+        a:hover {
+            outline: 0px;
+        }
+
+        .in-text-selection,
+        ::selection {
+            text-shadow: none;
+            background: var(--select-text-bg-color);
+            color: var(--select-text-font-color);
+        }
+
+        #write {
+            margin: 0px auto;
+            height: auto;
+            width: inherit;
+            word-break: normal;
+            overflow-wrap: break-word;
+            position: relative;
+            white-space: normal;
+            overflow-x: visible;
+            padding-top: 36px;
+        }
+
+        #write.first-line-indent p {
+            text-indent: 2em;
+        }
+
+        #write.first-line-indent li p,
+        #write.first-line-indent p * {
+            text-indent: 0px;
+        }
+
+        #write.first-line-indent li {
+            margin-left: 2em;
+        }
+
+        .for-image #write {
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        body.typora-export {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .typora-export .footnote-line,
+        .typora-export li,
+        .typora-export p {
+            white-space: pre-wrap;
+        }
+
+        .typora-export .task-list-item input {
+            pointer-events: none;
+        }
+
+        @media screen and (max-width: 500px) {
+            body.typora-export {
+                padding-left: 0px;
+                padding-right: 0px;
+            }
+
+            #write {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            .CodeMirror-sizer {
+                margin-left: 0px !important;
+            }
+
+            .CodeMirror-gutters {
+                display: none !important;
+            }
+        }
+
+        #write li>figure:last-child {
+            margin-bottom: 0.5rem;
+        }
+
+        #write ol,
+        #write ul {
+            position: relative;
+        }
+
+        img {
+            max-width: 100%;
+            vertical-align: middle;
+            image-orientation: from-image;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            color: inherit;
+            font: inherit;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            line-height: normal;
+            padding: 0px;
+        }
+
+        *,
+        ::after,
+        ::before {
+            box-sizing: border-box;
+        }
+
+        #write h1,
+        #write h2,
+        #write h3,
+        #write h4,
+        #write h5,
+        #write h6,
+        #write p,
+        #write pre {
+            width: inherit;
+        }
+
+        #write h1,
+        #write h2,
+        #write h3,
+        #write h4,
+        #write h5,
+        #write h6,
+        #write p {
+            position: relative;
+        }
+
+        p {
+            line-height: inherit;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            break-after: avoid-page;
+            break-inside: avoid;
+            orphans: 4;
+        }
+
+        p {
+            orphans: 4;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+        }
+
+        h4 {
+            font-size: 1.4rem;
+        }
+
+        h5 {
+            font-size: 1.2rem;
+        }
+
+        h6 {
+            font-size: 1rem;
+        }
+
+        .md-math-block,
+        .md-rawblock,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        p {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .md-blockmeta {
+            color: rgb(204, 204, 204);
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        a {
+            cursor: pointer;
+        }
+
+        sup.md-footnote {
+            padding: 2px 4px;
+            background-color: rgba(238, 238, 238, 0.7);
+            color: rgb(85, 85, 85);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        sup.md-footnote a,
+        sup.md-footnote a:hover {
+            color: inherit;
+            text-transform: inherit;
+            text-decoration: inherit;
+        }
+
+        #write input[type="checkbox"] {
+            cursor: pointer;
+            width: inherit;
+            height: inherit;
+        }
+
+        figure {
+            overflow-x: auto;
+            margin: 1.2em 0px;
+            max-width: calc(100% + 16px);
+            padding: 0px;
+        }
+
+        figure>table {
+            margin: 0px;
+        }
+
+        tr {
+            break-inside: avoid;
+            break-after: auto;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0px;
+            width: 100%;
+            overflow: auto;
+            break-inside: auto;
+            text-align: left;
+        }
+
+        table.md-table td {
+            min-width: 32px;
+        }
+
+        .CodeMirror-gutters {
+            border-right: 0px;
+            background-color: inherit;
+        }
+
+        .CodeMirror-linenumber {
+            user-select: none;
+        }
+
+        .CodeMirror {
+            text-align: left;
+        }
+
+        .CodeMirror-placeholder {
+            opacity: 0.3;
+        }
+
+        .CodeMirror pre {
+            padding: 0px 4px;
+        }
+
+        .CodeMirror-lines {
+            padding: 0px;
+        }
+
+        div.hr:focus {
+            cursor: none;
+        }
+
+        #write pre {
+            white-space: pre-wrap;
+        }
+
+        #write.fences-no-line-wrapping pre {
+            white-space: pre;
+        }
+
+        #write pre.ty-contain-cm {
+            white-space: normal;
+        }
+
+        .CodeMirror-gutters {
+            margin-right: 4px;
+        }
+
+        .md-fences {
+            font-size: 0.9rem;
+            display: block;
+            break-inside: avoid;
+            text-align: left;
+            overflow: visible;
+            white-space: pre;
+            background: inherit;
+            position: relative !important;
+        }
+
+        .md-diagram-panel {
+            width: 100%;
+            margin-top: 10px;
+            text-align: center;
+            padding-top: 0px;
+            padding-bottom: 8px;
+            overflow-x: auto;
+        }
+
+        #write .md-fences.mock-cm {
+            white-space: pre-wrap;
+        }
+
+        .md-fences.md-fences-with-lineno {
+            padding-left: 0px;
+        }
+
+        #write.fences-no-line-wrapping .md-fences.mock-cm {
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .md-fences.mock-cm.md-fences-with-lineno {
+            padding-left: 8px;
+        }
+
+        .CodeMirror-line,
+        twitterwidget {
+            break-inside: avoid;
+        }
+
+        .footnotes {
+            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-top: 1em;
+            margin-bottom: 1em;
+        }
+
+        .footnotes+.footnotes {
+            margin-top: 0px;
+        }
+
+        .md-reset {
+            margin: 0px;
+            padding: 0px;
+            border: 0px;
+            outline: 0px;
+            vertical-align: top;
+            background: 0px 0px;
+            text-decoration: none;
+            text-shadow: none;
+            float: none;
+            position: static;
+            width: auto;
+            height: auto;
+            white-space: nowrap;
+            cursor: inherit;
+            -webkit-tap-highlight-color: transparent;
+            line-height: normal;
+            font-weight: 400;
+            text-align: left;
+            box-sizing: content-box;
+            direction: ltr;
+        }
+
+        li div {
+            padding-top: 0px;
+        }
+
+        blockquote {
+            margin: 1rem 0px;
+        }
+
+        li .mathjax-block,
+        li p {
+            margin: 0.5rem 0px;
+        }
+
+        li blockquote {
+            margin: 1rem 0px;
+        }
+
+        li {
+            margin: 0px;
+            position: relative;
+        }
+
+        blockquote> :last-child {
+            margin-bottom: 0px;
+        }
+
+        blockquote> :first-child,
+        li> :first-child {
+            margin-top: 0px;
+        }
+
+        .footnotes-area {
+            color: rgb(136, 136, 136);
+            margin-top: 0.714rem;
+            padding-bottom: 0.143rem;
+            white-space: normal;
+        }
+
+        #write .footnote-line {
+            white-space: pre-wrap;
+        }
+
+        @media print {
+
+            body,
+            html {
+                border: 1px solid transparent;
+                height: 99%;
+                break-after: avoid;
+                break-before: avoid;
+                font-variant-ligatures: no-common-ligatures;
+            }
+
+            #write {
+                margin-top: 0px;
+                padding-top: 0px;
+                border-color: transparent !important;
+            }
+
+            .typora-export * {
+                -webkit-print-color-adjust: exact;
+            }
+
+            .typora-export #write {
+                break-after: avoid;
+            }
+
+            .typora-export #write::after {
+                height: 0px;
+            }
+
+            .is-mac table {
+                break-inside: avoid;
+            }
+        }
+
+        .footnote-line {
+            margin-top: 0.714em;
+            font-size: 0.7em;
+        }
+
+        a img,
+        img a {
+            cursor: pointer;
+        }
+
+        pre.md-meta-block {
+            font-size: 0.8rem;
+            min-height: 0.8rem;
+            white-space: pre-wrap;
+            background: rgb(204, 204, 204);
+            display: block;
+            overflow-x: hidden;
+        }
+
+        p>.md-image:only-child:not(.md-img-error) img,
+        p>img:only-child {
+            display: block;
+            margin: auto;
+        }
+
+        #write.first-line-indent p>.md-image:only-child:not(.md-img-error) img {
+            left: -2em;
+            position: relative;
+        }
+
+        p>.md-image:only-child {
+            display: inline-block;
+            width: 100%;
+        }
+
+        #write .MathJax_Display {
+            margin: 0.8em 0px 0px;
+        }
+
+        .md-math-block {
+            width: 100%;
+        }
+
+        .md-math-block:not(:empty)::after {
+            display: none;
+        }
+
+        .MathJax_ref {
+            fill: currentcolor;
+        }
+
+        [contenteditable="true"]:active,
+        [contenteditable="true"]:focus,
+        [contenteditable="false"]:active,
+        [contenteditable="false"]:focus {
+            outline: 0px;
+            box-shadow: none;
+        }
+
+        .md-task-list-item {
+            position: relative;
+            list-style-type: none;
+        }
+
+        .task-list-item.md-task-list-item {
+            padding-left: 0px;
+        }
+
+        .md-task-list-item>input {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            margin-left: -1.2em;
+            margin-top: calc(1em - 10px);
+            border: none;
+        }
+
+        .math {
+            font-size: 1rem;
+        }
+
+        .md-toc {
+            min-height: 3.58rem;
+            position: relative;
+            font-size: 0.9rem;
+            border-radius: 10px;
+        }
+
+        .md-toc-content {
+            position: relative;
+            margin-left: 0px;
+        }
+
+        .md-toc-content::after,
+        .md-toc::after {
+            display: none;
+        }
+
+        .md-toc-item {
+            display: block;
+            color: rgb(65, 131, 196);
+        }
+
+        .md-toc-item a {
+            text-decoration: none;
+        }
+
+        .md-toc-inner:hover {
+            text-decoration: underline;
+        }
+
+        .md-toc-inner {
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .md-toc-h1 .md-toc-inner {
+            margin-left: 0px;
+            font-weight: 700;
+        }
+
+        .md-toc-h2 .md-toc-inner {
+            margin-left: 2em;
+        }
+
+        .md-toc-h3 .md-toc-inner {
+            margin-left: 4em;
+        }
+
+        .md-toc-h4 .md-toc-inner {
+            margin-left: 6em;
+        }
+
+        .md-toc-h5 .md-toc-inner {
+            margin-left: 8em;
+        }
+
+        .md-toc-h6 .md-toc-inner {
+            margin-left: 10em;
+        }
+
+        @media screen and (max-width: 48em) {
+            .md-toc-h3 .md-toc-inner {
+                margin-left: 3.5em;
+            }
+
+            .md-toc-h4 .md-toc-inner {
+                margin-left: 5em;
+            }
+
+            .md-toc-h5 .md-toc-inner {
+                margin-left: 6.5em;
+            }
+
+            .md-toc-h6 .md-toc-inner {
+                margin-left: 8em;
+            }
+        }
+
+        a.md-toc-inner {
+            font-size: inherit;
+            font-style: inherit;
+            font-weight: inherit;
+            line-height: inherit;
+        }
+
+        .footnote-line a:not(.reversefootnote) {
+            color: inherit;
+        }
+
+        .md-attr {
+            display: none;
+        }
+
+        .md-fn-count::after {
+            content: ".";
+        }
+
+        code,
+        pre,
+        samp,
+        tt {
+            font-family: var(--monospace);
+        }
+
+        kbd {
+            margin: 0px 0.1em;
+            padding: 0.1em 0.6em;
+            font-size: 0.8em;
+            color: rgb(36, 39, 41);
+            background: rgb(255, 255, 255);
+            border: 1px solid rgb(173, 179, 185);
+            border-radius: 3px;
+            box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset;
+            white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        .md-comment {
+            color: rgb(162, 127, 3);
+            opacity: 0.8;
+            font-family: var(--monospace);
+        }
+
+        code {
+            text-align: left;
+            vertical-align: initial;
+        }
+
+        a.md-print-anchor {
+            white-space: pre !important;
+            border-width: initial !important;
+            border-style: none !important;
+            border-color: initial !important;
+            display: inline-block !important;
+            position: absolute !important;
+            width: 1px !important;
+            right: 0px !important;
+            outline: 0px !important;
+            background: 0px 0px !important;
+            text-decoration: initial !important;
+            text-shadow: initial !important;
+        }
+
+        .md-inline-math .MathJax_SVG .noError {
+            display: none !important;
+        }
+
+        .html-for-mac .inline-math-svg .MathJax_SVG {
+            vertical-align: 0.2px;
+        }
+
+        .md-math-block .MathJax_SVG_Display {
+            text-align: center;
+            margin: 0px;
+            position: relative;
+            text-indent: 0px;
+            max-width: none;
+            max-height: none;
+            min-height: 0px;
+            min-width: 100%;
+            width: auto;
+            overflow-y: hidden;
+            display: block !important;
+        }
+
+        .MathJax_SVG_Display,
+        .md-inline-math .MathJax_SVG_Display {
+            width: auto;
+            margin: inherit;
+            display: inline-block !important;
+        }
+
+        .MathJax_SVG .MJX-monospace {
+            font-family: var(--monospace);
+        }
+
+        .MathJax_SVG .MJX-sans-serif {
+            font-family: sans-serif;
+        }
+
+        .MathJax_SVG {
+            display: inline;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            zoom: 90%;
+            text-indent: 0px;
+            text-align: left;
+            text-transform: none;
+            letter-spacing: normal;
+            word-spacing: normal;
+            overflow-wrap: normal;
+            white-space: nowrap;
+            float: none;
+            direction: ltr;
+            max-width: none;
+            max-height: none;
+            min-width: 0px;
+            min-height: 0px;
+            border: 0px;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .MathJax_SVG * {
+            transition: none 0s ease 0s;
+        }
+
+        .MathJax_SVG_Display svg {
+            vertical-align: middle !important;
+            margin-bottom: 0px !important;
+            margin-top: 0px !important;
+        }
+
+        .os-windows.monocolor-emoji .md-emoji {
+            font-family: "Segoe UI Symbol", sans-serif;
+        }
+
+        .md-diagram-panel>svg {
+            max-width: 100%;
+        }
+
+        [lang="flow"] svg,
+        [lang="mermaid"] svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        [lang="mermaid"] .node text {
+            font-size: 1rem;
+        }
+
+        table tr th {
+            border-bottom: 0px;
+        }
+
+        video {
+            max-width: 100%;
+            display: block;
+            margin: 0px auto;
+        }
+
+        iframe {
+            max-width: 100%;
+            width: 100%;
+            border: none;
+        }
+
+        .highlight td,
+        .highlight tr {
+            border: 0px;
+        }
+
+        mark {
+            background: rgb(255, 255, 0);
+            color: rgb(0, 0, 0);
+        }
+
+        .md-html-inline .md-plain,
+        .md-html-inline strong,
+        mark .md-inline-math,
+        mark strong {
+            color: inherit;
+        }
+
+        mark .md-meta {
+            color: rgb(0, 0, 0);
+            opacity: 0.3 !important;
+        }
+
+        @media print {
+
+            .typora-export h1,
+            .typora-export h2,
+            .typora-export h3,
+            .typora-export h4,
+            .typora-export h5,
+            .typora-export h6 {
+                break-inside: avoid;
+            }
+        }
+
+        .md-diagram-panel .messageText {
+            stroke: none !important;
+        }
+
+        .md-diagram-panel .start-state {
+            fill: var(--node-fill);
+        }
+
+        .md-diagram-panel .edgeLabel rect {
+            opacity: 1 !important;
+        }
+
+        .md-require-zoom-fix foreignobject {
+            font-size: var(--mermaid-font-zoom);
+        }
+
+
+        :root {
+            --side-bar-bg-color: #fafafa;
+            --control-text-color: #777;
+        }
+
+        @include-when-export url(https://fonts.loli.net/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext);
+
+        /* open-sans-regular - latin-ext_latin */
+        /* open-sans-italic - latin-ext_latin */
+        /* open-sans-700 - latin-ext_latin */
+        /* open-sans-700italic - latin-ext_latin */
+        html {
+            font-size: 16px;
+        }
+
+        body {
+            font-family: "Open Sans", "Clear Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: rgb(51, 51, 51);
+            line-height: 1.6;
+        }
+
+        #write {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 30px;
+            padding-bottom: 100px;
+        }
+
+        @media only screen and (min-width: 1400px) {
+            #write {
+                max-width: 1024px;
+            }
+        }
+
+        @media only screen and (min-width: 1800px) {
+            #write {
+                max-width: 1200px;
+            }
+        }
+
+        #write>ul:first-child,
+        #write>ol:first-child {
+            margin-top: 30px;
+        }
+
+        a {
+            color: #4183C4;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            position: relative;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+            line-height: 1.4;
+            cursor: text;
+        }
+
+        h1:hover a.anchor,
+        h2:hover a.anchor,
+        h3:hover a.anchor,
+        h4:hover a.anchor,
+        h5:hover a.anchor,
+        h6:hover a.anchor {
+            text-decoration: none;
+        }
+
+        h1 tt,
+        h1 code {
+            font-size: inherit;
+        }
+
+        h2 tt,
+        h2 code {
+            font-size: inherit;
+        }
+
+        h3 tt,
+        h3 code {
+            font-size: inherit;
+        }
+
+        h4 tt,
+        h4 code {
+            font-size: inherit;
+        }
+
+        h5 tt,
+        h5 code {
+            font-size: inherit;
+        }
+
+        h6 tt,
+        h6 code {
+            font-size: inherit;
+        }
+
+        h1 {
+            font-size: 2.25em;
+            line-height: 1.2;
+            border-bottom: 1px solid #eee;
+        }
+
+        h2 {
+            font-size: 1.75em;
+            line-height: 1.225;
+            border-bottom: 1px solid #eee;
+        }
+
+        /*@media print {
+            .typora-export h1,
+            .typora-export h2 {
+                border-bottom: none;
+                padding-bottom: initial;
+            }
+        
+            .typora-export h1::after,
+            .typora-export h2::after {
+                content: "";
+                display: block;
+                height: 100px;
+                margin-top: -96px;
+                border-top: 1px solid #eee;
+            }
+        }*/
+
+        h3 {
+            font-size: 1.5em;
+            line-height: 1.43;
+        }
+
+        h4 {
+            font-size: 1.25em;
+        }
+
+        h5 {
+            font-size: 1em;
+        }
+
+        h6 {
+            font-size: 1em;
+            color: #777;
+        }
+
+        p,
+        blockquote,
+        ul,
+        ol,
+        dl,
+        table {
+            margin: 0.8em 0;
+        }
+
+        li>ol,
+        li>ul {
+            margin: 0 0;
+        }
+
+        hr {
+            height: 2px;
+            padding: 0;
+            margin: 16px 0;
+            background-color: #e7e7e7;
+            border: 0 none;
+            overflow: hidden;
+            box-sizing: content-box;
+        }
+
+        li p.first {
+            display: inline-block;
+        }
+
+        ul,
+        ol {
+            padding-left: 30px;
+        }
+
+        ul:first-child,
+        ol:first-child {
+            margin-top: 0;
+        }
+
+        ul:last-child,
+        ol:last-child {
+            margin-bottom: 0;
+        }
+
+        blockquote {
+            border-left: 4px solid #dfe2e5;
+            padding: 0 15px;
+            color: #777777;
+        }
+
+        blockquote blockquote {
+            padding-right: 0;
+        }
+
+        table {
+            padding: 0;
+            word-break: initial;
+        }
+
+        table tr {
+            border-top: 1px solid #dfe2e5;
+            margin: 0;
+            padding: 0;
+        }
+
+        table tr:nth-child(2n),
+        thead {
+            background-color: #f8f8f8;
+        }
+
+        table th {
+            font-weight: bold;
+            border: 1px solid #dfe2e5;
+            border-bottom: 0;
+            margin: 0;
+            padding: 6px 13px;
+        }
+
+        table td {
+            border: 1px solid #dfe2e5;
+            margin: 0;
+            padding: 6px 13px;
+        }
+
+        table th:first-child,
+        table td:first-child {
+            margin-top: 0;
+        }
+
+        table th:last-child,
+        table td:last-child {
+            margin-bottom: 0;
+        }
+
+        .CodeMirror-lines {
+            padding-left: 4px;
+        }
+
+        .code-tooltip {
+            box-shadow: 0 1px 1px 0 rgba(0, 28, 36, .3);
+            border-top: 1px solid #eef2f2;
+        }
+
+        .md-fences,
+        code,
+        tt {
+            border: 1px solid #e7eaed;
+            background-color: #f8f8f8;
+            border-radius: 3px;
+            padding: 0;
+            padding: 2px 4px 0px 4px;
+            font-size: 0.9em;
+        }
+
+        code {
+            background-color: #f3f4f4;
+            padding: 0 2px 0 2px;
+        }
+
+        .md-fences {
+            margin-bottom: 15px;
+            margin-top: 15px;
+            padding-top: 8px;
+            padding-bottom: 6px;
+        }
+
+
+        .md-task-list-item>input {
+            margin-left: -1.3em;
+        }
+
+        @media print {
+            html {
+                font-size: 13px;
+            }
+
+            table,
+            pre {
+                page-break-inside: avoid;
+            }
+
+            pre {
+                word-wrap: break-word;
+            }
+        }
+
+        .md-fences {
+            background-color: #f8f8f8;
+        }
+
+        #write pre.md-meta-block {
+            padding: 1rem;
+            font-size: 85%;
+            line-height: 1.45;
+            background-color: #f7f7f7;
+            border: 0;
+            border-radius: 3px;
+            color: #777777;
+            margin-top: 0 !important;
+        }
+
+        .mathjax-block>.code-tooltip {
+            bottom: .375rem;
+        }
+
+        .md-mathjax-midline {
+            background: #fafafa;
+        }
+
+        #write>h3.md-focus:before {
+            left: -1.5625rem;
+            top: .375rem;
+        }
+
+        #write>h4.md-focus:before {
+            left: -1.5625rem;
+            top: .285714286rem;
+        }
+
+        #write>h5.md-focus:before {
+            left: -1.5625rem;
+            top: .285714286rem;
+        }
+
+        #write>h6.md-focus:before {
+            left: -1.5625rem;
+            top: .285714286rem;
+        }
+
+        .md-image>.md-meta {
+            /*border: 1px solid #ddd;*/
+            border-radius: 3px;
+            padding: 2px 0px 0px 4px;
+            font-size: 0.9em;
+            color: inherit;
+        }
+
+        .md-tag {
+            color: #a7a7a7;
+            opacity: 1;
+        }
+
+        .md-toc {
+            margin-top: 20px;
+            padding-bottom: 20px;
+        }
+
+        .sidebar-tabs {
+            border-bottom: none;
+        }
+
+        #typora-quick-open {
+            border: 1px solid #ddd;
+            background-color: #f8f8f8;
+        }
+
+        #typora-quick-open-item {
+            background-color: #FAFAFA;
+            border-color: #FEFEFE #e5e5e5 #e5e5e5 #eee;
+            border-style: solid;
+            border-width: 1px;
+        }
+
+        /** focus mode */
+        .on-focus-mode blockquote {
+            border-left-color: rgba(85, 85, 85, 0.12);
+        }
+
+        header,
+        .context-menu,
+        .megamenu-content,
+        footer {
+            font-family: "Segoe UI", "Arial", sans-serif;
+        }
+
+        .file-node-content:hover .file-node-icon,
+        .file-node-content:hover .file-node-open-state {
+            visibility: visible;
+        }
+
+        .mac-seamless-mode #typora-sidebar {
+            background-color: #fafafa;
+            background-color: var(--side-bar-bg-color);
+        }
+
+        .md-lang {
+            color: #b4654d;
+        }
+
+        .html-for-mac .context-menu {
+            --item-hover-bg-color: #E6F0FE;
+        }
+
+        #md-notification .btn {
+            border: 0;
+        }
+
+        .dropdown-menu .divider {
+            border-color: #e5e5e5;
+        }
+
+        .ty-preferences .window-content {
+            background-color: #fafafa;
+        }
+
+        .ty-preferences .nav-group-item.active {
+            color: white;
+            background: #999;
+        }
+
+        :root {
+            --mermaid-font-zoom: 2.4em;
+        }
+
+
+        body {
+            display: flex;
+            font-family: Arial, sans-serif;
+        }
+
+        .sidebar {
+            width: 200px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            overflow-y: auto;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .content {
+            margin-left: 220px;
+            padding: 20px;
+            width: calc(100% - 220px);
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .content h1,
+        .content h2,
+        .content h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        ul#toc {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul#toc li a {
+            text-decoration: none;
+            color: black;
+        }
+
+        ul#toc li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <h3>目录</h3>
+        <ul id="toc">
+            <!-- 目录项将通过JavaScript动态添加 -->
+        </ul>
+    </div>
+    <div class="content">
+        <div id='write' class=''>
+            <h1><a name="sequence-alignment-user-manual" class="md-header-anchor"></a><span>Sequence Alignment User
+                    Manual</span></h1>
+            <h2><a name="前言概述" class="md-header-anchor"></a><span>前言概述</span></h2>
+            <blockquote>
+                <p><a></a>
+                    <span>本手册旨在帮助用户快速了解本软件的操作流程和功能，执行序列比对过程。</span>
+                </p>
+                <p><strong><span>快速开始</span></strong><span>:</span></p>
+                <ul>
+                    <li><span>如果您希望自定义参数设置，参考</span><a href='#参数修改'><span>参数修改</span></a></li>
+                    <li><span>如果您想了解参数含义和功能，参考</span><a href='#参数解读'><span>参数详解</span></a></li>
+                    <li><span>如果您不知道如何导文件，参考</span><a href='#序列输入'><span>序列输入</span></a>
+                        <span>其他报错信息参考</span><a href='#常见问题与解答'><span>常见问题与解答</span></a>
+                    </li>
+                </ul>
+            </blockquote>
+            <h3><a name="程序目的a-name程序目的a" class="md-header-anchor"></a><span>程序目的</span><a name="程序目的"></a></h3>
+            <p><span>此项目旨在开发一个全面的Python包，实现Needleman-Wunsch序列比对算法。该包将提供一个用户友好的界面来执行序列比对，并支持评分系统的定制。该包将设计用于处理DNA/RNA序列和蛋白质序列，使其成为生物信息学、基因组学、蛋白质组学和进化生物学等领域的研究人员和科学家的多功能工具。此外，该包还将包括用于可视化和分析比对结果的工具。</span>
+                <span>本程序采用Needleman-Wunsch算法，通过动态规划的应用，为匹配、不匹配和间隙（插入/删除）分配分数，找到两个序列之间的最佳可能比对。算法计算一个评分矩阵，代表输入序列的所有可能子序列的最佳比对得分。</span>
+            </p>
+            <h3><a name="程序目标用户a-name程序目标用户a" class="md-header-anchor"></a><span>程序目标用户</span><a name="程序目标用户"></a></h3>
+            <p><span>本程序适用于生物学研究人员、遗传学家以及任何需要进行序列分析的科学家和学生。</span></p>
+            <h3><a name="程序应用场景" class="md-header-anchor"></a><span>程序应用场景</span></h3>
+            <p><a name="程序应用场景"></a></p>
+            <ul>
+                <li><span>基因功能分析</span></li>
+                <li><span>物种进化研究</span></li>
+                <li><span>疾病相关变异鉴定</span></li>
+                <li><span>药物开发中的靶点发现</span></li>
+            </ul>
+            <h2><a id="参数设置" name="参数设置" class="md-header-anchor"></a><span>参数设置</span></h2>
+            <blockquote>
+                <p><strong><span>面板</span></strong><img src="image-5.png" referrerpolicy="no-referrer" alt="alt text">
+                </p>
+            </blockquote>
+            <h3><a name="主面板介绍a-name主面板介绍a" class="md-header-anchor"></a><span>主面板介绍</span><a name="主面板介绍"></a></h3>
+            <p><img src="image-1.png" referrerpolicy="no-referrer" alt="主面板介绍"></p>
+            <h3><a name="参数解读a-name参数解读a" class="md-header-anchor"></a><span>参数解读</span><a name="参数解读"></a></h3>
+            <details>
+                <summary>参数详解（下拉查看更多）</summary>
+                <ul>
+                    <><b>Algorithm</b>: <br>
+                        选择比对使用的算法，如Smith-Waterman或Needleman-Wunsch。<br>
+                        了解更多：<a
+                            href="https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm">Smith-Waterman</a>, <a
+                            href="https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm">Needleman-Wunsch</a>
+                        <p>
+                            <li><b><span>All optimal alignments</span></b><span>: </span><br>
+                                <span>是否显示所有最优比对结果。</span><br>
+                                <span>了解更多：</span><a
+                                    href="https://en.wikipedia.org/wiki/Sequence_alignment"><span>序列比对</span></a>
+                            </li>
+                        </p>
+                        <p>
+                            <li><b><span>Match Score</span></b><span>: </span><br>
+                                <span>匹配得分，定义相同碱基或氨基酸匹配时的得分。</span><br>
+                                <span>了解更多：</span><a
+                                    href="https://en.wikipedia.org/wiki/Sequence_alignment#Scoring_schemes"><span>评分方案</span></a>
+                            </li>
+                        </p>
+                        <p>
+                            <li><b><span>Mismatch Score</span></b><span>: </span><br>
+                                <span>不匹配得分，定义不同碱基或氨基酸匹配时的得分。</span><br>
+                                <span>了解更多：</span><a
+                                    href="https://en.wikipedia.org/wiki/Sequence_alignment#Scoring_schemes"><span>评分方案</span></a>
+                            </li>
+                        </p>
+                        <p>
+                            <li><b><span>Indel Score</span></b><span>: </span><br>
+                                <span>插入或删除得分，定义序列中插入或删除碱基或氨基酸的罚分。</span><br>
+                                <span>了解更多：</span><a
+                                    href="https://en.wikipedia.org/wiki/Gap_penalty"><span>间隙罚分</span></a>
+                            </li>
+                        </p>
+                        <p>
+                            <li><b><span>Ruler</span></b><span>: </span><br>
+                                <span>是否在结果中显示尺度标记。</span><br>
+                                <span>了解更多关于</span><b><span>结果呈现</span></b><span>的通用信息。</span>
+                            </li>
+                        </p>
+                        <p>
+                            <li><b><span>Scoring Matrix</span></b><span>: </span><br>
+                                <span>选择用于评分的矩阵，如BLOSUM或PAM。</span><br>
+                                <span>了解更多：</span><a
+                                    href="https://en.wikipedia.org/wiki/Substitution_matrix"><span>替代矩阵</span></a><span>,
+                                </span><a
+                                    href="https://en.wikipedia.org/wiki/Point_accepted_mutation"><span>PAM</span></a><span>,
+                                </span><a href="https://en.wikipedia.org/wiki/BLOSUM"><span>BLOSUM</span></a>
+                            </li>
+                </ul>
+            </details>
+            </p>
+            <h3><a name="参数修改" class="md-header-anchor"></a><span>参数修改</span></h3>
+            <p><a name="参数修改"></a></p>
+            <blockquote>
+                <p><strong><span>面板</span></strong><img src="image-3.png" referrerpolicy="no-referrer" alt="alt text">
+                </p>
+            </blockquote>
+            <ul>
+                <li><strong><span>Algorithm</span></strong><span>: 通过下拉菜单选择。</span></li>
+                <li><strong><span>All optimal alignments</span></strong><span>: 勾选框选择。</span></li>
+                <li><strong><span>Match Score</span></strong><span>: 输入框直接输入分数。</span></li>
+                <li><strong><span>Mismatch Score</span></strong><span>: 输入框直接输入分数。</span></li>
+                <li><strong><span>Indel Score</span></strong><span>: 输入框直接输入分数。</span></li>
+                <li><strong><span>Ruler</span></strong><span>: 勾选框选择。</span></li>
+                <li><strong><span>Scoring Matrix</span></strong><span>: 下拉菜单选择。</span></li>
+            </ul>
+            <h3><a name="参数推荐" class="md-header-anchor"></a><span>参数推荐</span></h3>
+            <p><a name="参数推荐"></a></p>
+            <ul>
+                <li><span>对于高度保守的序列，推荐使用较高的Match Score和较低的Mismatch与Indel Score。</span></li>
+                <li><span>对于一般的核酸序列，推荐优先使用PAM矩阵。</span></li>
+            </ul>
+            <blockquote>
+                <h4><a name="应用举例a-name应用举例a" class="md-header-anchor"></a><span>应用举例</span><a name="应用举例"></a></h4>
+                <p><strong><span>Reference 1:</span></strong><span> </span><em><span>Substitution
+                            Matrices</span></em><span> </span>
+                    <a href='https://onlinelibrary.wiley.com/doi/10.1002/9780470015902.a0005265.pub2' target='_blank'
+                        class='url'>https://onlinelibrary.wiley.com/doi/10.1002/9780470015902.a0005265.pub2</a>
+                    <strong><span>Reference 2:</span></strong><span> </span><em><span>打分矩阵</span></em><span> </span>
+                    <a href='https://qinqianshan.com/bioinformatics/align/score-matrics/' target='_blank'
+                        class='url'>https://qinqianshan.com/bioinformatics/align/score-matrics/</a>
+                </p>
+            </blockquote>
+            <h2><a id="参数控制键" name="参数控制键" class="md-header-anchor"></a><span>参数控制键</span></h2>
+            <blockquote>
+                <p><strong><span>面板</span></strong>
+                    <img src="image-2.png" referrerpolicy="no-referrer" alt="alt text">
+                </p>
+            </blockquote>
+            <ul>
+                <li><span>Example</span>
+                    <span>键入样例序列待比对</span>
+                </li>
+                <li><span>FASTA file</span>
+                    <span>导入用户自定义fasta文件（自动识别两条序列）</span>
+                </li>
+                <li><span>Align</span>
+                    <span>进行比对</span>
+                </li>
+            </ul>
+            <h2><a name="序列输入a-name序列输入a" class="md-header-anchor"></a><span>序列输入</span><a name="序列输入"></a></h2>
+            <blockquote>
+                <p><strong><span>面板</span></strong><img src="image-4.png" referrerpolicy="no-referrer" alt="alt text">
+                </p>
+            </blockquote>
+            <blockquote>
+                <p><strong><span>主面板介绍</span></strong><img src="image-6.png" referrerpolicy="no-referrer"
+                        alt="alt text"></p>
+            </blockquote>
+            <p><span>您可通过输入框直接输入序列，或通过上传文件的方式加载序列。</span></p>
+            <h2><a id="结果解读a-name结果解读a" class="md-header-anchor"></a><span>结果解读</span><a name="结果解读"></a></h2>
+            <p><span>在确认进行比对，程序运行完成之后，页面将输出结果界面，显示序列比对的详细信息，包括比对得分、序列相似度百分比及具体的比对结果图</span></p>
+            <blockquote>
+                <p><span>样例：</span><img src="image-7.png" referrerpolicy="no-referrer" alt="alt text"></p>
+            </blockquote>
+            <h2><a id="常见问题与解答" name="常见问题与解答" class="md-header-anchor"></a><span>常见问题与解答</span></h2>
+            <p><a name="常见问题与解答"></a></p>
+            <blockquote>
+                <p><span>本模块长期维护，如果您发现无法解决的问题，欢迎联系我们</span></p>
+            </blockquote>
+            <h3><a name="常见问题1无法自定义评分矩阵参数" class="md-header-anchor"></a><span>常见问题1：无法自定义评分矩阵参数</span></h3>
+            <ul>
+                <li><span>我们首先推荐您使用我们默认的打分矩阵</span>
+                    <span>如您仍需要自定义参数，我们的面板支持您键入任何形式的数值，如果您遇到输入参数无法更改或显示不出来的情况，可能是因为您没有输入数值形式参数，如str类型无法被键入，请您检查所键入参数的类型，并检查浏览器设置，如您仍有困难，欢迎联系我们</span>
+                </li>
+            </ul>
+            <blockquote>
+                <p><span>对于长序列的比对，处理时间可能较长，请您耐心等待。为了优化性能和处理时间，我们推荐以下解决方案：</span></p>
+                <ul>
+                    <li><strong><span>硬件加速</span></strong><span>: 使用支持并行处理的硬件，如多核处理器或GPU，可以显著提高序列比对的速度。</span></li>
+                    <li><strong><span>算法优化</span></strong><span>: 选择适当的算法和参数，如调整Scoring
+                            Matrix或减少搜索的序列范围，可以减少计算复杂度和时间。</span></li>
+                    <li><strong><span>分批处理</span></strong><span>: 将长序列分割成较小的片段进行比对，然后合并结果。</span></li>
+                    <li><strong><span>云计算服务</span></strong><span>: 考虑使用云计算资源进行序列比对，这可以提供更强的计算能力和更快的处理速度。</span></li>
+                </ul>
+                <p><span>以上策略可帮助用户在处理大规模数据集时，有效管理资源和时间。如果您有更具体的需求或问题，欢迎通过我们的GitHub仓库提出。</span></p>
+            </blockquote>
+            <h2><a name="源代码" class="md-header-anchor"></a><span>源代码</span></h2>
+            <p><span>我们的源代码可以在GitHub上找到，欢迎访问我们的 </span><a
+                    href='https://github.com/Michael-Williams49/sa'><span>GitHub仓库</span></a><span>
+                    来查看代码、提交问题或者贡献代码。也可以通过标题栏的链接进入我们的仓库</span></p>
+            <hr />
+            <p><em><span>此文章的最后一次编辑时间: 2024年06月05日 11：51</span></em></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toc = document.getElementById('toc');
+            document.querySelectorAll('.content h2, .content h3').forEach((header) => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.textContent = header.textContent;
+                a.href = `#${header.id}`;
+                li.appendChild(a);
+                toc.appendChild(li);
+            });
+        });
+
+    </script>
+</body>
+
+</html>
